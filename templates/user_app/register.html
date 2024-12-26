@@ -9,12 +9,30 @@
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <style>
-          body {
+        body {
             background-color: rgba(255, 255, 255, 0.9); /* Light white background with opacity */
             font-family: 'Arial', sans-serif;
             color: #333; /* Text color */
         }
 
+        /* Logo Styling */
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #007bff; /* Logo color */
+            text-align: center;
+            margin-bottom: 30px; /* Space below the logo */
+            font-family: 'Helvetica Neue', sans-serif; /* Elegant and modern font */
+            text-decoration: none; /* Remove underline from link */
+        }
+
+        .logo span {
+            color: #ff6600; /* Highlighted part of logo */
+        }
+
+        .logo:hover {
+            color: #0056b3; /* Hover effect for logo color */
+        }
 
         .card {
             border-radius: 12px;
@@ -111,85 +129,90 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-10">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">Create Account</h3>
-                    <form method="post" action="{% url 'register-url' %}">
-                        {% csrf_token %}
+    <!-- Logo Section with Link -->
+    <div class="logo">
+        <a href="{% url 'home-url' %}">Ref<span>ashioned</span></a> <!-- Link to homepage or desired URL -->
+    </div>
 
-                        <!-- Username Field -->
-                        <div class="form-group mb-3">
-                            <label for="id_username">Username:</label>
-                            <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username" required oninput="showInstruction('usernameInstructions')">
-                            <small id="usernameInstructions" class="field-instructions">Username must be between 3 and 15 characters long. Use letters, numbers, and underscores.</small>
-                        </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Create Account</h3>
+                        <form method="post" action="{% url 'register-url' %}">
+                            {% csrf_token %}
 
-                        <!-- Email Field -->
-                        <div class="form-group mb-3">
-                            <label for="id_email">Email:</label>
-                            <input type="email" class="form-control" id="id_email" name="email" placeholder="Enter your email" required oninput="showInstruction('emailInstructions')">
-                            <small id="emailInstructions" class="field-instructions">Please enter a valid email address (e.g., example@domain.com).</small>
-                        </div>
+                            <!-- Username Field -->
+                            <div class="form-group mb-3">
+                                <label for="id_username">Username:</label>
+                                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username" required oninput="showInstruction('usernameInstructions')">
+                                <small id="usernameInstructions" class="field-instructions">Username must be between 3 and 15 characters long. Use letters, numbers, and underscores.</small>
+                            </div>
 
-                        <!-- Password Field -->
-                        <div class="form-group mb-3">
-                            <label for="id_password">Password:</label>
-                            <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password" required oninput="showInstruction('passwordInstructions')">
-                            <span class="show-password" onclick="togglePasswordVisibility('id_password', this)">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                            <small id="passwordInstructions" class="field-instructions">Password must be at least 8 characters long, with a mix of letters, numbers, and special characters.</small>
-                        </div>
+                            <!-- Email Field -->
+                            <div class="form-group mb-3">
+                                <label for="id_email">Email:</label>
+                                <input type="email" class="form-control" id="id_email" name="email" placeholder="Enter your email" required oninput="showInstruction('emailInstructions')">
+                                <small id="emailInstructions" class="field-instructions">Please enter a valid email address (e.g., example@domain.com).</small>
+                            </div>
 
-                        <!-- Confirm Password Field -->
-                        <div class="form-group mb-4">
-                            <label for="id_confirm_password">Confirm Password:</label>
-                            <input type="password" class="form-control" id="id_confirm_password" name="confirm_password" placeholder="Confirm your password" required oninput="showInstruction('confirmPasswordInstructions')">
-                            <span class="show-password" onclick="togglePasswordVisibility('id_confirm_password', this)">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                            <small id="confirmPasswordInstructions" class="field-instructions">Please re-enter your password to confirm.</small>
-                        </div>
+                            <!-- Password Field -->
+                            <div class="form-group mb-3">
+                                <label for="id_password">Password:</label>
+                                <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password" required oninput="showInstruction('passwordInstructions')">
+                                <span class="show-password" onclick="togglePasswordVisibility('id_password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                                <small id="passwordInstructions" class="field-instructions">Password must be at least 8 characters long, with a mix of letters, numbers, and special characters.</small>
+                            </div>
 
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-info btn-lg">Register</button>
-                        </div>
+                            <!-- Confirm Password Field -->
+                            <div class="form-group mb-4">
+                                <label for="id_confirm_password">Confirm Password:</label>
+                                <input type="password" class="form-control" id="id_confirm_password" name="confirm_password" placeholder="Confirm your password" required oninput="showInstruction('confirmPasswordInstructions')">
+                                <span class="show-password" onclick="togglePasswordVisibility('id_confirm_password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                                <small id="confirmPasswordInstructions" class="field-instructions">Please re-enter your password to confirm.</small>
+                            </div>
 
-                        <div class="text-center text-muted mt-3">
-                            Already have an account? <a href="{% url 'login-url' %}">Sign In</a>
-                        </div>
-                    </form>
+                            <!-- Submit Button -->
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info btn-lg">Register</button>
+                            </div>
+
+                            <div class="text-center text-muted mt-3">
+                                Already have an account? <a href="{% url 'login-url' %}">Sign In</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Font Awesome for Icons -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-<script>
-    function togglePasswordVisibility(fieldId, toggleElement) {
-        const field = document.getElementById(fieldId);
-        const icon = toggleElement.querySelector("i");
-        if (field.type === "password") {
-            field.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            field.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
+    <!-- Font Awesome for Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        function togglePasswordVisibility(fieldId, toggleElement) {
+            const field = document.getElementById(fieldId);
+            const icon = toggleElement.querySelector("i");
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                field.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
         }
-    }
 
-    function showInstruction(instructionId) {
-        const instruction = document.getElementById(instructionId);
-        instruction.classList.add('show');
-    }
-</script>
+        function showInstruction(instructionId) {
+            const instruction = document.getElementById(instructionId);
+            instruction.classList.add('show');
+        }
+    </script>
 </body>
 </html>

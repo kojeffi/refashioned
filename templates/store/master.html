@@ -39,6 +39,28 @@
 
 </head>
 
+<style>
+     /* Logo Styling */
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #007bff; /* Logo color */
+            text-align: center;
+            margin-bottom: 30px; /* Space below the logo */
+            font-family: 'Helvetica Neue', sans-serif; /* Elegant and modern font */
+            text-decoration: none; /* Remove underline from link */
+        }
+
+        .logo span {
+            color: #ff6600; /* Highlighted part of logo */
+        }
+
+        .logo:hover {
+            color: #0056b3; /* Hover effect for logo color */
+        }
+
+</style>
+
 <body>
 <div class="page-wrapper">
     <header class="header header-2 header-intro-clearance">
@@ -113,11 +135,11 @@
                         <span class="sr-only">Toggle mobile menu</span>
                         <i class="icon-bars"></i>
                     </button>
-                    <a href="{% url 'home-url' %}" class="logo text-primary" style="text-decoration: none;">
-                        <h5 class="text-primary" style="font-weight: 500; font-style: italic; font-family: 'Arial', sans-serif; ">
-                            Refashioned
-                        </h5>
-                    </a>
+                      <!-- Logo Section with Link -->
+                    <div class="logo">
+                        <a href="{% url 'home-url' %}">Ref<span>ashioned</span></a> <!-- Link to homepage or desired URL -->
+                    </div>
+
 
                 </div><!-- End .header-left -->
 
