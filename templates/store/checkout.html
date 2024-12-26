@@ -1,0 +1,156 @@
+{% extends "store/master.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <div class="card shadow-sm animated fadeInDown">
+                <div class="card-body">
+                    <h2 class="mb-4">Complete Your Payment</h2>
+
+                    <div class="mb-4 border-bottom pb-3">
+                        <h5 class="mb-3">Order Summary</h5>
+                        <div class="row mb-2">
+                            <div class="col-sm-6">Subtotal:</div>
+                            <div class="col-sm-6 text-sm-end">£{{ subtotal|floatformat:2 }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-6">Shipping:</div>
+                            <div class="col-sm-6 text-sm-end">£{{ shipping|floatformat:2 }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6"><strong>Total Price:</strong></div>
+                            <div class="col-sm-6 text-sm-end"><strong>£{{ total_price|floatformat:2 }}</strong></div>
+                        </div>
+                    </div>
+
+                    <form method="post" class="animated fadeInUp">
+                        {% csrf_token %}
+
+                        <h5 class="mb-4">Billing Address</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="id_first_name" name="first_name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="id_last_name" name="last_name" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="id_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="id_address" name="address" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="id_city" name="city" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="id_state" class="form-label">State</label>
+                                <input type="text" class="form-control" id="id_state" name="state" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="id_zip" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" id="id_zip" name="zip_code" required>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-4">Payment Method</h5>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="stripe" value="stripe" required>
+                            <label class="form-check-label" for="stripe">Pay with Stripe</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="paypal" value="paypal" required>
+                            <label class="form-check-label" for="paypal">Pay with PayPal</label>
+                        </div>
+
+                          <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="mpesa" value="paypal" required>
+                            <label class="form-check-label" for="mpesa">Pay with M-Pesa</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Proceed to Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extracss %}
+<style>
+.animated {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fadeInDown {
+    animation-name: fadeInDown;
+}
+
+.fadeInUp {
+    animation-name: fadeInUp;
+}
+
+/* Additional styles for the modern look */
+.card-body {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.5);
+}
+
+.form-check-input:checked {
+    background-color: #4CAF50;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.5);
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+<!-- templates/store/order_success.html -->
+
+{% extends 'store/master.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Thank you for your order!</h1>
+    <p>Your order number is {{ order.id }}.</p>
+    <p>We have sent a confirmation email to {{ order.user.email }}.</p>
+</div>
+{% endblock %}

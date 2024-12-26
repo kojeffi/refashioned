@@ -1,0 +1,37 @@
+
+{% extends 'store/master.html' %}
+{% block content %}
+
+<br>
+
+<div class="container py-5">
+    <h1 class="mb-4" style="color: maroon;">{{ request.user.username }}'s Wishlist</h1>
+    <p>Number of items in wishlist: {{ products.count }}</p> <!-- Display count -->
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400" class="card-img-top" alt="No image available">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text text-primary font-weight-bold">£ {{ product.price }}</p>
+                            <a href="{% url 'remove_from_wishlist' product.id %}" class="btn btn-outline-danger">
+                                Remove from Wishlist
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No products in your wishlist.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,156 @@
+{% extends 'store/master.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg px-lg-5 px-3"
+         data-setbg="{% static 'img/ecommerce-3640321_960_720.jpg' %}">
+    <style>
+        .breadcrumb-section {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0; /* Reduced padding for a smaller height */
+            color: black;
+        }
+
+        .breadcrumb-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 1;
+        }
+
+        .breadcrumb__text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb__text h2 {
+            font-size: 36px; /* Reduced font size for a more compact look */
+            font-weight: 700;
+            margin-bottom: 15px; /* Reduced margin for better spacing */
+            color: black;
+        }
+
+        .breadcrumb__option {
+            font-size: 16px; /* Reduced font size for a more compact look */
+        }
+
+        .breadcrumb__option a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .breadcrumb__option span {
+            color: black;
+        }
+
+        .breadcrumb__option a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 767px) {
+            .breadcrumb__text h2 {
+                font-size: 28px; /* Adjusted for smaller screens */
+            }
+
+            .breadcrumb__option {
+                font-size: 14px; /* Adjusted for smaller screens */
+            }
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Terms</h2>
+                    <div class="breadcrumb__option">
+                        <a href="{% url 'home-url' %}">Home</a>
+                        <span>Terms and Conditions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<main class="container-fluid my-5 px-lg-5 px-3">
+    <style>
+        main.container {
+            background-color: #f9f9f9; /* Light background for better readability */
+            border-radius: 8px; /* Rounded corners for a softer look */
+            padding: 30px; /* Adequate padding for spacing */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #007bff; /* Primary color for headings */
+            border-bottom: 2px solid #007bff; /* Underline effect for emphasis */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333; /* Darker color for section headings */
+            margin-top: 30px;
+            border-bottom: 1px solid #ddd; /* Light underline for section headings */
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6; /* Improved line spacing for readability */
+            color: #555; /* Slightly darker text for better contrast */
+            margin-bottom: 20px; /* Spacing between paragraphs */
+        }
+
+        a {
+            color: #007bff; /* Link color matching heading color */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover for better UX */
+        }
+    </style>
+    <h4 class="text-primary mb-4">Terms and Conditions</h4>
+    <p>Welcome to our AI-driven e-commerce website. By accessing and using our website, you agree to comply with and be bound by the following terms and conditions:</p>
+
+    <h5 class="mt-4">1. User Registration and Accounts</h5>
+    <p>To use certain features of our website, you may need to create an account. You agree to provide accurate and up-to-date information during the registration process and to keep your account information secure.</p>
+
+    <h5 class="mt-4">2. Product Information</h5>
+    <p>We strive to provide accurate information about the products available on our website. However, we do not warrant that product descriptions or other content are accurate, complete, or error-free.</p>
+
+    <h5 class="mt-4">3. Orders and Payments</h5>
+    <p>All orders are subject to acceptance and availability. We reserve the right to refuse or cancel any order. Payment must be made at the time of purchase, and we accept various payment methods as specified on the website.</p>
+
+    <h5 class="mt-4">4. Returns and Refunds</h5>
+    <p>Our return and refund policy is outlined separately on our website. Please review it carefully before making a purchase.</p>
+
+    <h5 class="mt-4">5. Intellectual Property</h5>
+    <p>All content on our website, including text, images, logos, and software, is our property or the property of our licensors and is protected by intellectual property laws.</p>
+
+    <h5 class="mt-4">6. Limitation of Liability</h5>
+    <p>We are not liable for any direct, indirect, incidental, or consequential damages arising from your use of our website or the purchase of products from our website.</p>
+
+    <h5 class="mt-4">7. Changes to Terms</h5>
+    <p>We may update these terms and conditions from time to time. Any changes will be posted on this page, and it is your responsibility to review them periodically.</p>
+
+    <p>If you have any questions or concerns about these terms and conditions, please <a href="contact.html" class="text-decoration-none">contact us</a>.</p>
+</main>
+
+{% endblock %}

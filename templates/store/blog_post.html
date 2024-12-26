@@ -1,0 +1,201 @@
+{% extends 'store/master.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+<style>
+    .blog-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        border-radius: 8px;
+        animation: fadeInDown 1s;
+    }
+    .blog-header h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    .blog-header p {
+        color: #f8f9fa;
+        font-size: 1rem;
+    }
+    .blog-post {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 1s;
+        margin-bottom: 30px;
+    }
+    .blog-post h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .blog-post p {
+        line-height: 1.7;
+        font-size: 1.1rem;
+        color: #343a40;
+    }
+    .blog-post-meta {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .blog-post-meta i {
+        margin-right: 5px;
+    }
+    .author-info {
+        display: flex;
+        align-items: center;
+        margin-top: 30px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.001);
+        animation: fadeIn 2s;
+    }
+    .author-info img {
+        border-radius: 50%;
+        margin-right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    .author-info .author-name {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #343a40;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg px-lg-5 px-3"
+         data-setbg="{% static 'img/ecommerce-3640321_960_720.jpg' %}">
+    <style>
+        .breadcrumb-section {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0; /* Reduced padding for a smaller height */
+            color: black;
+        }
+
+        .breadcrumb-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 1;
+        }
+
+        .breadcrumb__text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb__text h2 {
+            font-size: 36px; /* Reduced font size for a more compact look */
+            font-weight: 700;
+            margin-bottom: 15px; /* Reduced margin for better spacing */
+            color: black;
+        }
+
+        .breadcrumb__option {
+            font-size: 16px; /* Reduced font size for a more compact look */
+        }
+
+        .breadcrumb__option a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .breadcrumb__option span {
+            color: black;
+        }
+
+        .breadcrumb__option a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 767px) {
+            .breadcrumb__text h2 {
+                font-size: 28px; /* Adjusted for smaller screens */
+            }
+
+            .breadcrumb__option {
+                font-size: 14px; /* Adjusted for smaller screens */
+            }
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Blog</h2>
+                    <div class="breadcrumb__option">
+                        <a href="{% url 'home-url' %}">Home</a>
+                        <span>Our E-commerce Blog</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+
+
+
+<div class="container-fluid  px-lg-5 px-3">
+    <div class="blog-header animate__animated animate__fadeInDown">
+        <h4 class="text-dark">Our E-commerce Blog</h4>
+        <p class="text-dark">Insights, trends, and stories from the world of e-commerce</p>
+    </div>
+
+    {% for blog_post in blog_posts %}
+    <div class="blog-post animate__animated animate__fadeInUp">
+        <h3>{{ blog_post.title }}</h3>
+        <p class="blog-post-meta">
+            <i class="fas fa-user"></i> By {{ blog_post.author.username }}
+            <i class="fas fa-calendar-alt"></i> {{ blog_post.created_at }}
+        </p>
+        <p>{{ blog_post.content|truncatewords:5000 }}</p>
+<!--        <a class="text-dark" href="{% url 'blog_detail' blog_post.id %}">Read more</a>-->
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

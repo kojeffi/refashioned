@@ -1,0 +1,14 @@
+<!-- templates/order_detail.html -->
+{% extends 'store/master.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title mb-4">Order Confirmation</h1>
+            <h3 class="card-subtitle mb-3">Order #{{ order.id }}</h3>
+            <p class="card-text">Thank you for your purchase! Your order has been placed successfully.</p>
+            <h4 class="card-text">Total: ${{ order.total_price }}</h4>
+        </div>
+    </div>
+</div>
+{% endblock %}

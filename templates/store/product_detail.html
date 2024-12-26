@@ -1,0 +1,510 @@
+{% extends "store/master.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg px-lg-5 px-3"
+         data-setbg="{% static 'img/ecommerce-3640321_960_720.jpg' %}">
+    <style>
+        .breadcrumb-section {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0; /* Reduced padding for a smaller height */
+            color: black;
+        }
+
+        .breadcrumb-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 1;
+        }
+
+        .breadcrumb__text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb__text h2 {
+            font-size: 36px; /* Reduced font size for a more compact look */
+            font-weight: 700;
+            margin-bottom: 15px; /* Reduced margin for better spacing */
+            color: black;
+        }
+
+        .breadcrumb__option {
+            font-size: 16px; /* Reduced font size for a more compact look */
+        }
+
+        .breadcrumb__option a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .breadcrumb__option span {
+            color: black;
+        }
+
+        .breadcrumb__option a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 767px) {
+            .breadcrumb__text h2 {
+                font-size: 28px; /* Adjusted for smaller screens */
+            }
+
+            .breadcrumb__option {
+                font-size: 14px; /* Adjusted for smaller screens */
+            }
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Product Details</h2>
+                    <div class="breadcrumb__option">
+                        <a href="{% url 'home-url' %}">Home</a>
+                        <span>Product Details</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+
+
+<!-- Product Details Section Begin -->
+<section class="product-details spad">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-6">
+    <div class="product__details__pic">
+        <div class="product__details__pic__item">
+            {% if product.image %}
+            <div class="image-container">
+                <img class="product__details__pic__item--large zoom-image"
+                     src="{{ product.image.url }}" alt="" style="height: 400px;">
+            </div>
+            {% else %}
+            <img src="https://via.placeholder.com/400" class="img-fluid rounded shadow" alt="No image available" data-aos="fade-right">
+            {% endif %}
+        </div>
+        <div class="product__details__pic__slider owl-carousel">
+            <!-- Slider content here if any -->
+        </div>
+    </div>
+</div>
+
+<style>
+.image-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+}
+
+.zoom-image {
+    transition: transform 0.5s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.image-container:hover .zoom-image {
+    transform: scale(1.2); /* Zoom the image */
+}
+
+.product__details__pic__item {
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.product__details__pic__item:hover {
+    transform: scale(1.05); /* Slightly zooms in the entire container on hover */
+}
+
+.product__details__pic__item--large {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const imageContainer = document.querySelector('.image-container');
+    const zoomImage = document.querySelector('.zoom-image');
+
+    imageContainer.addEventListener('mousemove', (e) => {
+        const rect = imageContainer.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width * 100;
+        const y = (e.clientY - rect.top) / rect.height * 100;
+        zoomImage.style.transformOrigin = `${x}% ${y}%`;
+    });
+
+    imageContainer.addEventListener('mouseleave', () => {
+        zoomImage.style.transformOrigin = 'center center';
+        zoomImage.style.transform = 'scale(1)';
+    });
+});
+</script>
+
+
+            <div class="col-lg-6 col-md-6">
+    <div class="product__details__text">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <div class="product__details__price display-4 text-success">£{{ product.price }}</div>
+        <div class="d-flex mb-4">
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm me-2">
+                <i class="fas fa-shopping-cart"></i> ADD TO CART
+            </a>
+            <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-outline-danger btn-sm me-2">
+                <i class="fas fa-heart"></i> Add to Wishlist
+            </a>
+            <a href="{% url 'dynamic_price_update' product.id %}" class="btn btn-secondary btn-sm me-2">
+                <i class="fas fa-sync-alt"></i> Refresh Price
+            </a>
+        </div>
+
+        <a href="{% url 'add_to_compare' product.id %}" class="btn btn-outline-info me-2">
+            <i class="fas fa-exchange-alt"></i> Add to Product Comparison
+        </a>
+        <a href="{% url 'compare_products' %}" class="btn btn-outline-primary">
+            <i class="fas fa-balance-scale"></i> Compare Products
+        </a>
+
+        <ul class="list-unstyled mt-4">
+            <li><b>Availability:</b> <span class="text-success">Stock: {{ product.stock }}</span></li>
+            <li><b>Share on:</b>
+                <div class="share mt-2">
+                    <a href="https://www.facebook.com" class="btn btn-outline-primary me-2">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com" class="btn btn-outline-info me-2">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://www.instagram.com" class="btn btn-outline-danger me-2">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://www.pinterest.com" class="btn btn-outline-warning">
+                        <i class="fab fa-pinterest"></i> Pinterest
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="reviews mt-5" data-aos="fade-up">
+        <h2 class="mb-3">Reviews</h2>
+        <ul class="list-unstyled">
+            {% for review in reviews %}
+            <li class="review-item p-3 mb-3 bg-light rounded shadow-sm" id="review-{{ review.id }}" data-rating="{{ review.rating }}">
+                <strong>{{ review.user.username }}</strong>
+                <p id="rating-{{ review.id }}" style="font-size: 20px;"></p>
+                <p>{{ review.comment }}</p>
+                <small class="text-muted">{{ review.created_at }}</small>
+            </li>
+            {% empty %}
+            <li class="no-reviews text-center">No reviews yet.</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'leave_review' product.id %}" class="btn btn-outline-primary rounded-pill btn-block mt-3">
+            Leave a review
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.review-item').forEach(item => {
+        const rating = item.getAttribute('data-rating');
+        const starContainer = document.getElementById('rating-' + item.getAttribute('id').split('-')[1]);
+        starContainer.innerHTML = '';
+
+        // Generate star icons
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.className = 'star';
+            star.innerHTML = i <= rating ? '&#9733;' : '&#9734;'; // Filled or empty star
+            starContainer.appendChild(star);
+        }
+    });
+});
+</script>
+
+<style>
+.product-title {
+    font-weight: 700;
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+.product__details__price {
+    font-size: 2.5em;
+    color: #28a745;
+}
+
+.share a {
+    border-radius: 50px;
+    padding: 0.5em 1em;
+}
+
+.star {
+    color: #f39c12; /* Gold color for filled stars */
+    font-size: 1.5em; /* Adjust size as needed */
+    margin-right: 2px; /* Space between stars */
+}
+
+.review-item {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.review-item strong {
+    font-size: 1.2em;
+    color: #343a40;
+}
+
+.review-item small {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+</style>
+
+            <div class="col-lg-12">
+                <div class="product__details__tab">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"
+                               aria-selected="true">Description</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                            <div class="product__details__tab__desc">
+                                <h6>Product Infomation</h6>
+                                <p>{{ product.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Details Section End -->
+
+<!-- Related Product Section Begin -->
+<section class="related-product py-5  px-lg-5 px-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="section-title related__product__title mb-4">
+                    <h2 class="text-uppercase font-weight-bold">Similar Products</h2>
+                    <br>
+                    <p class="text-muted">Explore similar products that might interest you</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% for similar_product in similar_products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-aos="fade-up">
+                <div class="product__item card border-0 shadow-sm">
+                    <div class="product__item__pic position-relative">
+                        <img src="{{ similar_product.image.url }}" alt="{{ similar_product.name }}" class="img-fluid card-img-top rounded-top">
+                        <ul class="product__item__pic__hover list-inline text-center position-absolute w-100 p-2 bg-light rounded-bottom">
+                            <li class="list-inline-item">
+                                <a href="{% url 'product_detail' similar_product.id %}" class="text-dark"><i class="fa fa-eye"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{% url 'add_to_wishlist' similar_product.id %}" class="text-danger"><i class="fa fa-heart"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#" class="text-info"><i class="fa fa-retweet"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{% url 'add_to_cart' similar_product.id %}" class="text-success"><i class="fa fa-shopping-cart"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text p-3">
+                        <h6 class="text-center">
+                            <a href="{% url 'product_detail' similar_product.id %}" class="text-dark font-weight-bold">{{ similar_product.name }}</a>
+                        </h6>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="price text-primary font-weight-bold">£{{ similar_product.price }}</span>
+                            {% if similar_product.discount %}
+                            <span class="badge badge-danger">-{{ similar_product.discount }}%</span>
+                            {% endif %}
+                        </div>
+                        {% if similar_product.final_price %}
+                        <div class="text-muted small text-center">Final Price: £{{ similar_product.final_price }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Related Product Section End -->
+
+
+<style>
+    .container img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .container p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+
+    .container h4 {
+        font-size: 2rem;
+        color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+
+    .rounded-pill {
+        border-radius: 50px;
+    }
+
+    .rounded-circle {
+        border-radius: 50%;
+    }
+
+    .reviews {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .review-item {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .no-reviews {
+        color: #999;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init();
+        const decreaseQuantityButton = document.getElementById('decrease-quantity');
+        const increaseQuantityButton = document.getElementById('increase-quantity');
+        const quantityInput = document.getElementById('quantity');
+        const addToCartLink = document.getElementById('add-to-cart-link');
+        const totalPriceElement = document.getElementById('total-price');
+        const basePrice = parseFloat(document.querySelector('.product-price').getAttribute('data-base-price'));
+
+        function updateTotalPrice() {
+            const quantity = parseInt(quantityInput.value);
+            const totalPrice = (basePrice * quantity).toFixed(2);
+            totalPriceElement.textContent = totalPrice;
+        }
+
+        decreaseQuantityButton.addEventListener('click', () => {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity > 1) {
+                quantityInput.value = quantity - 1;
+                updateTotalPrice();
+            }
+        });
+
+        increaseQuantityButton.addEventListener('click', () => {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity < parseInt(quantityInput.max)) {
+                quantityInput.value = quantity + 1;
+                updateTotalPrice();
+            }
+        });
+
+        quantityInput.addEventListener('input', () => {
+            if (quantityInput.value < 1) {
+                quantityInput.value = 1;
+            } else if (quantityInput.value > parseInt(quantityInput.max)) {
+                quantityInput.value = quantityInput.max;
+            }
+            updateTotalPrice();
+        });
+
+        addToCartLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            const productId = addToCartLink.getAttribute('data-product-id');
+            const quantity = quantityInput.value;
+            const url = `{% url 'add_to_cart' 0 %}`.replace('0', productId) + `?quantity=${quantity}`;
+            window.location.href = url;
+        });
+
+        updateTotalPrice(); // Initialize total price on page load
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set interval to update the price every 5 seconds (or your desired interval)
+        setInterval(function() {
+            // Make an AJAX request to the dynamic price update URL
+            fetch("{% url 'dynamic_price_update' product.id %}")
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming the response contains a JSON object with the new price
+                    if (data.success) {
+                        // Update the price displayed on the page
+                        const priceElement = document.querySelector('.product__details__price');
+                        if (priceElement) {
+                            priceElement.textContent = `£${data.new_price}`;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error updating price:', error));
+        }, 5000); // Update every 5 seconds
+    });
+</script>
+
+
+{% endblock %}

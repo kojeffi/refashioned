@@ -1,0 +1,80 @@
+{% extends 'store/master.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<main class="main">
+<div class="container-fluid py-5 px-lg-5 pl-3">
+    <div class="row">
+        <!-- Personal Information Column -->
+        <div class="col-lg-6 mb-4 animate__animated animate__fadeInUp">
+            <div class="card border-0 shadow-sm h-100">
+                <h5 class="featured-product text-center">Personal Information</h5>
+                <div class="card-body d-flex align-items-center">
+                     <div class="account">
+                        <a href="{% url 'profile-url' %}">
+                            {% if user.profile.profile_photo %}
+                            <img class="profile-photo" src="{{ user.profile.profile_photo.url }}" alt="Profile Photo">
+                            {% else %}
+                            <img class="rounded-circle profile-photo" src="{% static 'assets/images/profile.jpeg' %}" alt="Photo">
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-0">{{ user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>About Me: <br> <br>
+                    </strong> {{ user.profile.about }}</p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Profile Column -->
+        <div class="col-lg-6 mb-4 animate__animated animate__fadeInUp">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title text-dark mb-4">Update Your Profile</h4>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {% bootstrap_form form %}
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-warning text-white">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Order History Button Begin -->
+    <a href="{% url 'order_history' %}" class="btn btn-primary btn-lg text-white d-block mx-auto my-4 animate__animated animate__fadeIn">
+        Order History
+    </a>
+    <!-- Order History Button End -->
+
+    <div class="list-group">
+        {% for order in orders %}
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start mb-3 animate__animated animate__fadeInUp">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Order ID: {{ order.id }}</h5>
+                <small class="text-muted">Status: {{ order.status }}</small>
+            </div>
+            <p class="mb-1">Total: ${{ order.total_price }}</p>
+        </a>
+        {% empty %}
+        <p class="text-center">No orders found.</p>
+        {% endfor %}
+    </div>
+</div>
+</main>
+
+{% endblock %}

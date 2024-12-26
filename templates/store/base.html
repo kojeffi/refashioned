@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branchy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'img/logo1.jpg' %}"/>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+    <!-- Custom CSS Styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+
+    <!-- Bootstrap CSS link (place this in the <head> section of your HTML) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: Bootstrap JavaScript bundle (place this at the end of your <body> section, before </body>) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <style>
+        /* Additional Custom Styles */
+        .card {
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-text {
+            color: #666;
+        }
+
+        .btn-outline-secondary {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .navbar-light {
+            background-color: #343a40;
+        }
+
+        .gray-navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            color: #ffffff;
+        }
+
+        .top-header, .middle-header {
+            background-color: #f8f9fa;
+            padding: 10px 0;
+        }
+
+        .top-header a, .middle-header a {
+            color: #333;
+        }
+
+        .call-us-section .fa-mobile-alt {
+            color: #007bff;
+        }
+
+        .logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .cart-icon-bg {
+            background-color: #007bff;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .cart-count {
+            background-color: #28a745;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .custom-search-form .custom-search-input {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .custom-search-button {
+            border: none;
+            background-color: #fff;
+        }
+
+        .custom-search-icon {
+            color: #000;
+        }
+
+        @media (max-width: 767.98px) {
+            .top-header, .middle-header {
+                text-align: center;
+            }
+
+            .top-header .row > div, .middle-header .row > div {
+                flex: 100%;
+                max-width: 100%;
+            }
+
+            .top-header .row > div:not(:last-child) {
+                margin-bottom: 10px;
+            }
+
+            .navbar-collapse {
+                background-color: #343a40;
+                padding: 10px;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .custom-search-form {
+                margin-top: 10px;
+            }
+
+            .custom-search-input, .custom-search-button, .btn-primary {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Ensuring consistent alignment */
+        .top-header, .middle-header, .navbar {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .branchy-logo1 {
+    display: flex;
+    margin-top:10px;
+}
+
+.logo-image {
+    height: 2.0rem;
+    width: auto; /* Adjust the width of the logo */
+    margin-right: 0.5rem; /* Adjust the spacing between the logo and the text as needed */
+}
+
+.branchy-text {
+    font-size: 2.0rem; /* Adjust the font size of the text */
+    font-weight: 800; /* Adjust the font weight of the text if needed */
+}
+
+    </style>
+</head>
+<body>
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+
+<!-- Top Header -->
+<header class="container-fluid top-header mt-2 px-lg-5 px-3">
+    <div class="row align-items-center">
+        <div class="col-md-6 text-start">
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                <div class="me-2">
+                    <a href="" class="text-decoration-none top-header-link">Gift Certificates</a>
+                </div>
+                <span class="top-header-separator">|</span>
+                <!-- Currency Dropdown -->
+                <div class="dropdown ms-2">
+                    <a class="dropdown-toggle top-header-dropdown" href="#" role="button" id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Currency: {{ request.session.currency_symbol|default:"£" }}
+                    </a>
+                    <ul class="dropdown-menu top-header-dropdown-menu" aria-labelledby="currencyDropdown">
+                        <li><a class="dropdown-item" href="{% url 'set_currency' 'GBP' %}">£ - British Pound</a></li>
+                        <!-- Additional currency options can be added here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <ul class="list-unstyled d-flex mb-0 justify-content-center justify-content-md-end align-items-center">
+                <!-- My Account Dropdown -->
+                <li class="me-3 dropdown position-relative d-flex align-items-center">
+                    <a href="#" class="top-header-link dropdown-toggle" data-bs-toggle="dropdown" style="color:#20c997; text-decoration: none;">
+                        <i class="fa fa-user"></i> My Account
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                        <li>
+                            <a href="{% url 'login-url' %}" class="dropdown-item">
+                                <i class="fa fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'register-url' %}" class="dropdown-item">
+                                <i class="fa fa-user-plus"></i> Sign Up
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'profile-url' %}" class="dropdown-item">
+                                <i class="fa fa-user-circle"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout-url' %}" class="dropdown-item">
+                                <i class="fa fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Vertical Separator -->
+                <li class="d-flex align-items-center">
+                    <div style="border-left: 1px solid #ddd; height: 24px; margin-left: 10px; margin-right: 10px;"></div>
+                </li>
+
+                <!-- Wishlist Link -->
+                <li class="ms-3 d-flex align-items-center">
+                    <a href="{% url 'wishlist_detail' %}" class="top-header-link" style="color:#20c997; text-decoration: none;">
+                        <i class="fa fa-heart"></i> Wishlist
+                    </a>
+                </li>
+
+                <!-- Vertical Separator -->
+                <li class="d-flex align-items-center">
+                    <div style="border-left: 1px solid #ddd; height: 24px; margin-left: 10px; margin-right: 10px;"></div>
+                </li>
+
+                <!-- Shopping Cart Link -->
+                <li class="ms-3 d-flex align-items-center">
+                    <a href="{% url 'cart_detail' %}" class="top-header-link" style="color:#20c997; text-decoration: none;">
+                        <i class="fa fa-shopping-cart"></i> Shopping Cart
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* Hide the top header on mobile devices */
+    @media (max-width: 767px) {
+        .top-header {
+            display: none;
+        }
+    }
+</style>
+
+
+
+<!-- Mobile Br Elements -->
+<div class="mobile-brs">
+    <br>
+    <br>
+</div>
+
+<style>
+    /* Hide the top header on mobile devices */
+    @media (max-width: 767px) {
+        .top-header {
+            display: none;
+        }
+        .mobile-brs {
+            display: block;
+        }
+    }
+
+    /* Hide the <br> elements on larger screens */
+    @media (min-width: 768px) {
+        .mobile-brs {
+            display: none;
+        }
+    }
+</style>
+
+
+<style>
+    /* Basic styling */
+    .top-header {
+        background-color: #f8f9fa;
+        padding: 10px 0;
+    }
+
+    .top-header-link {
+        color: #007bff;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .top-header-link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+        transform: scale(1.05);
+    }
+
+    .top-header-separator {
+        height: 30px;
+        padding-right: 5px;
+        padding-left: 5px;
+        color: #6c757d;
+    }
+
+    .top-header-dropdown {
+        background-color: white;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.25rem;
+        color: #007bff;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .top-header-dropdown:hover {
+        background-color: #e9ecef;
+        color: #0056b3;
+    }
+
+    .top-header-dropdown-menu {
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .dropdown-menu.show {
+        opacity: 1;
+    }
+
+    .top-header-dropdown-menu .dropdown-item {
+        transition: background-color 0.3s ease;
+    }
+
+    .top-header-dropdown-menu .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
+
+<style>
+    /* Clear Notifications Link Styling */
+  .clear-notification-link {
+      display: inline-block;
+      margin-left: 10px;
+      color: #dc3545; /* Red color for clear link */
+      text-decoration: none;
+      font-weight: bold;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      transition: all 0.3s ease;
+  }
+
+  .clear-notification-link:hover {
+      color: #fff; /* White text on hover */
+      background-color: #dc3545; /* Red background on hover */
+      border-color: #dc3545; /* Border color on hover */
+  }
+
+  /* Notifications Link Styling */
+  .notifications-link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+  }
+
+  /* Notification Icon Background Styling */
+  .notification-icon-bg {
+      position: relative;
+      background-color: #f8f9fa; /* Light background color */
+      border-radius: 50%;
+      padding: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  /* Notification Count Styling */
+  .notification-count {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #dc3545; /* Red background */
+      color: #fff;
+      font-size: 0.75rem;
+      border-radius: 50%;
+      padding: 0.2rem 0.5rem;
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 1;
+  }
+
+  /* Notifications List Styling */
+  .notifications-list {
+      display: none; /* Hidden by default */
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 300px; /* Adjust width as needed */
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      opacity: 0; /* Start hidden */
+      visibility: hidden; /* Start hidden */
+      transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+  }
+
+  /* Notification Item Styling */
+  .notification-item {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #ddd;
+      color: #333;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .notification-item:last-child {
+      border-bottom: none;
+  }
+
+  .notification-message {
+      flex-grow: 1;
+      margin-right: 10px;
+  }
+
+  /* Show Notifications List on Hover */
+  .me-4:hover .notifications-list {
+      display: block; /* Show on hover */
+      opacity: 1; /* Fade in */
+      visibility: visible; /* Make visible */
+      animation: fadeIn 0.3s ease;
+  }
+
+  /* Animation for Notifications List */
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+          transform: translateY(-10px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+</style>
+
+
+
+
+<!-- Middle Header -->
+<header class="container-fluid middle-header border-bottom mt-2 px-lg-5 px-3"
+        style="padding-left:60px;padding-right:60px">
+    <div class="row align-items-center">
+        <div class="col-md-3 d-none d-md-block text-center text-md-start">
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                <div class="logo-container me-md-3">
+                    <a href="{% url 'home-url' %}" style="text-decoration:none">
+                        <h4 class="branchy-logo1">
+                            <img class="rounded logo-image animate__animated animate__fadeIn" src="{% static 'img/logo1.jpg' %}" alt="Branchy Logo">
+                            <span class="branchy-text" style="letter-spacing: -0.2rem;">BRANCHY</span>
+                        </h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 d-none d-md-block"></div>
+        <div class="col-md-4 col-12 text-center text-md-end call-us-section mt-2 mt-md-0">
+            <ul class="list-unstyled d-flex justify-content-center justify-content-md-end mb-0">
+                <li class="me-4 animate__animated animate__fadeIn">
+                    <a href="{% url 'contact' %}" class="text-decoration-none d-flex align-items-center">
+                        <i class="fa fa-mobile-alt contact-icon" style="color:#20c997;font-size: 3.0rem;"></i>
+                        <div class="text-start ms-2">
+                            <p class="text-muted mb-0 fw-bold">CALL US NOW</p>
+                            <p class="text-muted mb-0 fw-bold">+447508516836</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="d-flex align-items-center me-4 animate__animated animate__fadeIn" style="height: 40px; padding-left:20px">
+                    <span class="separator"></span>
+                </li>
+                <li class="me-4 animate__animated animate__fadeIn">
+                    <a href="{% url 'cart_detail' %}" class="cart-link text-decoration-none">
+                        <span class="cart-icon-bg">
+                            <i class="fa fa-shopping-bag text-white" style="font-size: 1.5rem;"></i>
+                        </span>
+                        <span class="badge badge-pill badge-success cart-count">{{ cart_items_count }}</span>
+                    </a>
+                </li>
+                <li class="me-4 animate__animated animate__fadeIn" style="padding-left:20px;">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'notifications' %}" class="notifications-link text-decoration-none">
+        <span class="notification-icon-bg">
+            <i class="fas fa-bell text-white"></i>
+            <span class="badge badge-pill badge-danger notification-count">
+                {% if request.user.notification_set.count == 0 %}0{% else %}{{ request.user.notification_set.count }}{% endif %}
+            </span>
+        </span>
+                    </a>
+                    {% endif %}
+                </li>
+
+                <li class="me-4 animate__animated animate__fadeIn" style="height: 40px;padding-left:20px">
+                    <a href="{% url 'profile-url' %}">
+                        {% if user.profile.profile_photo %}
+                        <img class="rounded-circle profile-photo" src="{{ user.profile.profile_photo.url }}" alt="Profile Photo">
+                        {% else %}
+                        <img class="rounded-circle profile-photo" src="{% static 'img/profile.jpeg' %}" alt="Photo">
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* Hide the header on mobile devices */
+    @media (max-width: 767px) {
+        .middle-header {
+            display: none;
+        }
+    }
+</style>
+
+
+<style>
+    /* Basic styling */
+    .middle-header {
+        background-color: #ffffff;
+        padding: 15px 0;
+    }
+
+    .branchy-logo1 {
+        display: flex;
+        align-items: center;
+    }
+
+    .branchy-text {
+        color: #343a40;
+        font-weight: bold;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .branchy-logo1:hover .branchy-text {
+        color: #007bff;
+        transform: scale(1.1);
+    }
+
+    .contact-icon {
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .contact-icon:hover {
+        color: #007bff;
+        transform: scale(1.2);
+    }
+
+    .separator {
+        height: 100%;
+        border-left: 1px solid #343a40;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .cart-icon-bg {
+        background-color: #007bff;
+        border-radius: 50%;
+        padding: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .cart-icon-bg:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+    }
+
+    .notifications-link {
+        position: relative;
+    }
+
+    .notification-icon-bg {
+        background-color: #007bff;
+        border-radius: 50%;
+        padding: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .notification-icon-bg:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+    }
+
+    .notifications-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        z-index: 1000;
+    }
+
+    .notifications-link:hover .notifications-list {
+        display: block;
+    }
+
+    .notification-item {
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .clear-notification-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .clear-notification-link:hover {
+        text-decoration: underline;
+    }
+
+    .profile-photo {
+        height: 50px;
+        transition: transform 0.3s ease, border 0.3s ease;
+    }
+
+    .profile-photo:hover {
+        transform: scale(1.1);
+        border: 2px solid #007bff;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+<nav class="container-fluid navbar navbar-expand-lg navbar-light gray-navbar px-lg-5 px-3"
+     style="padding-left:60px;padding-right:60px;padding-top:0;padding-bottom:0;">
+
+    <!-- Mobile Logo and Title -->
+    <div class="d-lg-none d-flex align-items-center justify-content-between" style="padding:15px;">
+        <a href="{% url 'home-url' %}">
+            <img class="rounded logo-image animate__animated animate__fadeIn"
+                 src="{% static 'img/logo1.jpg' %}" alt="Branchy Logo" style="max-height: 40px;">
+        </a>
+        <a href="{% url 'home-url' %}" style="text-decoration: none;">
+            <h1 class="mb-0 logo-title animate__animated animate__fadeIn"
+                style="font-size: 1.5rem; font-weight: 900; letter-spacing:-0.05rem;
+                color: white; text-transform: uppercase;">BRANCHY</h1>
+        </a>
+    </div>
+
+    <!-- Notification, Cart, and Profile Icons -->
+    <div class="d-lg-none d-flex align-items-center">
+        <ul class="navbar-nav mb-2 mb-lg-0 d-flex flex-row">
+            <li class="nav-item me-4">
+                {% if request.user.is_authenticated %}
+                <a href="#" class="notifications-link text-decoration-none">
+                    <span class="notification-icon-bg">
+                        <i class="fas fa-bell text-white"></i>
+                        <span class="badge badge-pill badge-danger notification-count">
+                            {% if request.user.notification_set.count == 0 %}0{% else %}{{ request.user.notification_set.count }}{% endif %}
+                        </span>
+                    </span>
+                </a>
+                {% endif %}
+            </li>
+            <li class="nav-item me-4" style="margin-left:15px;padding-top:-5px">
+                <a href="{% url 'cart_detail' %}" class="cart-link text-decoration-none">
+                    <span class="cart-icon-bg">
+                        <i class="fa fa-shopping-bag text-white" style="font-size: 1.5rem;"></i>
+                    </span>
+                    <span class="badge badge-pill badge-success cart-count">{{ cart_items_count }}</span>
+                </a>
+            </li>
+            <li class="nav-item" style="margin-left:15px;padding-top:-5px">
+                <a href="{% url 'profile-url' %}">
+                    {% if user.profile.profile_photo %}
+                    <img class="rounded-circle profile-photo" src="{{ user.profile.profile_photo.url }}" alt="Profile Photo" style="height: 40px;">
+                    {% else %}
+                    <img class="rounded-circle profile-photo" src="{% static 'img/profile.jpeg' %}" alt="Photo" style="height: 40px;">
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Navbar Toggler -->
+    <button class="navbar-toggler animate__animated animate__fadeIn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation" onclick="toggleIcon(this)">
+        <i class="fas fa-bars text-white"></i>
+    </button>
+
+    <!-- Navbar Collapse -->
+    <div class="collapse navbar-collapse justify-content-between animate__animated animate__fadeIn"
+         id="navbarNav" style="background-color: #345;">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 justify-content-start"
+            style="font-size: 1.0rem; padding-left: 20px;">
+            <li class="nav-item"><a class="nav-link text-white text-center text-uppercase" href="{% url 'home-url' %}">Home</a></li>
+            <li class="nav-item"><a class="nav-link text-white text-center text-uppercase" href="{% url 'product_list' %}">Products</a></li>
+            <li class="nav-item"><a class="nav-link text-white text-center text-uppercase" href="{% url 'shipping' %}">Shipping & Returns</a></li>
+            <li class="nav-item"><a class="nav-link text-white text-center text-uppercase" href="{% url 'contact' %}">Contact Us</a></li>
+            <li class="nav-item"><a class="nav-link text-white text-center text-uppercase" href="{% url 'about' %}">About Us</a></li>
+                <li class="nav-item dropdown d-lg-none">
+                <a class="nav-link dropdown-toggle text-white text-center text-uppercase"
+                   href="#" role="button" data-bs-toggle="dropdown">My account</a>
+                <ul class="dropdown-menu animate__animated animate__fadeIn">
+                    <li><a class="dropdown-item" href="{% url 'login-url' %}"><i class="fa fa-sign-in-alt"></i>  Login</a></li>
+                    <li><a class="dropdown-item" href="{% url 'register-url' %}"> <i class="fa fa-user-plus"></i> Register</a></li>
+                    <li><a class="dropdown-item" href="{% url 'profile-url' %}"><i class="fa fa-user-circle"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout-url' %}"><i class="fa fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white text-center text-uppercase"
+                   href="#" role="button" data-bs-toggle="dropdown">More</a>
+                <ul class="dropdown-menu animate__animated animate__fadeIn">
+                    <li><a class="dropdown-item" href="{% url 'blog_list' %}">Blog</a></li>
+                    <li><a class="dropdown-item" href="{% url 'recommend_bundles' %}">Recommend bundles</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown d-md-none">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Product Categories
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="#feature">Featured Products</a></li>
+                    <li><a class="dropdown-item" href="#new">New Products</a></li>
+                    <li><a class="dropdown-item" href="#offer">Product on Offer</a></li>
+                    <li><a class="dropdown-item" href="{% url 'image_search' %}">Image Search</a></li>
+                    {% if request.user.is_authenticated and request.user %}
+                    <li><a class="dropdown-item" href="{% url 'recover_abandoned_cart' user_id=user.id %}">Recover Abandoned Cart</a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item" href="{% url 'cart_detail' %}">Shopping Cart</a></li>
+                    <li><a class="dropdown-item" href="{% url 'wishlist_detail' %}">Wishlist</a></li>
+                </ul>
+            </li>
+        </ul>
+        <!-- Search Form -->
+        <form method="get" action="{% url 'search' %}" class="d-flex align-items-center w-75 ml-auto custom-search-form" style="padding-right: 20px; position: relative;">
+            <div class="input-group">
+                <input type="search" class="form-control rounded-0 custom-search-input" id="q" name="q" placeholder="Search by product name" aria-label="Search" style="height: 40px; font-size: 0.9rem; border-right: none; box-shadow: none;" onkeyup="showSuggestions(this.value)">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-block" style="height: 40px; font-size: 0.9rem; background-color:#20c997; border-left: none; box-shadow: none;">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</nav>
+
+
+
+
+<style>
+    /* Add this CSS to your stylesheet */
+
+/* Styling for the thin collapsed navbar */
+.navbar-collapse {
+    max-height: 50vh; /* Adjust height to make it thinner */
+    overflow-y: auto;
+    padding: 0; /* Remove default padding */
+}
+
+.navbar-nav {
+    margin: 0; /* Remove default margin */
+}
+
+.nav-item {
+    padding: 0; /* Remove default padding */
+}
+
+.nav-link {
+    padding: 10px 15px; /* Adjust padding for a thinner appearance */
+    font-size: 0.9rem; /* Adjust font size if needed */
+}
+
+.dropdown-menu {
+    padding: 0; /* Remove padding from dropdown menu */
+}
+
+@media (min-width: 992px) {
+    .navbar-collapse {
+        max-height: none; /* Remove restriction on larger screens */
+        overflow-y: visible;
+    }
+}
+
+</style>
+
+
+<style>
+    /* Apply this only to mobile devices */
+    @media (max-width: 767px) {
+        nav.container-fluid {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        body {
+            padding-top: 60px; /* Adjust this based on your navbar height */
+        }
+    }
+</style>
+
+
+
+<script>
+    function toggleIcon(button) {
+        const icon = button.querySelector('i');
+        if (icon.classList.contains('fa-bars')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+</script>
+
+
+
+
+
+<script>
+    const searchInput = document.getElementById('search_query');
+    const voiceSearchBtn = document.getElementById('voice_search_btn');
+
+    voiceSearchBtn.addEventListener('click', () => {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+            const voiceInput = event.results[0][0].transcript;
+            searchInput.value = voiceInput;
+        };
+
+        recognition.start();
+    });
+</script>
+
+<style>
+    @keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translate3d(0, 40px, 0);
+}
+to {
+opacity: 1;
+transform: none;
+}
+}
+
+.animated {
+animation-duration: 1s;
+animation-fill-mode: both;
+}
+
+.fadeInUp {
+animation-name: fadeInUp;
+}
+
+</style>
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    /* Section Styles */
+    .product-section {
+        margin-bottom: 40px;
+    }
+    .product-section h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+    .product-row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 10px; /* To accommodate scroll buttons */
+    }
+    .product-row::-webkit-scrollbar {
+        display: none;
+    }
+    .product {
+        flex: 0 0 auto;
+        width: 200px;
+        margin-right: 20px;
+        text-align: center;
+        border: 1px solid #e1e4e8;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .product img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .price {
+        font-weight: bold;
+        color: #28a745;
+        margin-top: 10px;
+    }
+    .old-price {
+        text-decoration: line-through;
+        margin-left: 5px;
+        color: #dc3545;
+    }
+    .icons {
+        margin-top: 10px;
+    }
+    .icons i {
+        color: #333;
+        margin: 0 8px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .icons i:hover {
+        color: #007bff;
+    }
+    /* Scroll Buttons */
+    .scroll-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+    .scroll-left {
+        left: 10px;
+    }
+    .scroll-right {
+        right: 10px;
+    }
+</style>
+
+
+<style>
+    /* Cookie Consent Banner Styles */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #343a40;
+        color: white;
+        padding: 15px 20px;
+        text-align: center;
+        display: none; /* Hidden by default */
+        z-index: 1000;
+    }
+    .cookie-banner button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+    .cookie-banner button:hover {
+        background-color: #218838;
+    }
+</style>
+
+<style>
+    .footer {
+        background-color: #f8f8f8;
+        color: #333;
+
+    }
+
+    .footer .sign-up {
+        background-color: #20c997;
+        color: #333;
+        padding: 30px 0;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .footer .sign-up input[type="email"] {
+        width: 60%;
+        margin-right: 10px;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .footer .sign-up button {
+        background-color: #ffffff;
+        color: #343a40;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .footer h6 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .footer ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer ul li a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .footer ul li a:hover {
+        color: #20c997;
+    }
+
+    .footer .contact-info p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+        border-top: 1px solid #495057;
+        padding: 20px 0;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .footer-bottom p {
+        margin: 10px 0;
+    }
+
+    .footer-bottom img {
+        width: 40px;
+        margin: 0 5px;
+    }
+
+    .footer-bottom a {
+        color: #333;
+        text-decoration: none;
+        margin: 0 10px;
+        transition: color 0.2s;
+    }
+
+    .footer-bottom a:hover {
+        color: #20c997;
+    }
+</style>
+
+<style>
+    .footer-column {
+        border-right: 1px solid #ddd;
+        padding-right: 20px;
+        margin-right: -1px; /* to avoid double border between columns */
+    }
+
+    .footer-column:last-child {
+        border-right: none; /* Remove the border from the last column */
+    }
+</style>
+<style>
+
+    .rating i {
+color: #f5c518; /* Customize the color of the stars */
+margin-right: 2px;
+}
+
+     /* Basic Styling */
+     .logo-container {
+         width: 60px;
+         height: 60px;
+     }
+     .logo {
+         width: 100%;
+         height: 100%;
+         object-fit: contain;
+     }
+     .call-us-section {
+         font-size: 18px;
+     }
+     .navbar-nav .nav-link {
+         font-weight: 500;
+         color: #fff;
+         transition: color 0.3s ease;
+     }
+
+     /* Additional Styling for Professional Look */
+     header .container {
+         max-width: 1200px;
+     }
+
+     header h1 {
+         font-size: 1.5rem;
+         color: #333;
+     }
+
+     .call-us-section .call-us-text {
+         font-weight: bold;
+         color: #007bff;
+     }
+
+     .call-us-section .toll-free-text {
+         font-size: 1rem;
+         color: #6c757d;
+     }
+
+     header .btn-group .btn,
+     header .btn-outline-secondary {
+         border-radius: 20px;
+         font-size: 0.875rem;
+         padding: 0.375rem 1rem;
+     }
+
+
+     .navbar .navbar-nav .dropdown-menu {
+         border-radius: 0.5rem;
+         z-index: 1000;
+     }
+
+     .navbar .fa-shopping-bag {
+         font-size: 1.5rem;
+     }
+
+     .navbar .form-control {
+         border-radius: 20px;
+         font-size: 0.875rem;
+     }
+
+     .navbar .btn-outline-success {
+         border-radius: 20px;
+         font-size: 0.875rem;
+     }
+
+     /* Specific styling for increased height */
+     .navbar-expand-lg .navbar-nav .nav-link {
+         padding-top: 1rem;
+         padding-bottom: 1rem;
+     }
+
+     /* Color and Spacing Adjustments */
+     .top-header {
+         background-color: white;
+         padding: 10px 0;
+     }
+     .middle-header {
+         background-color: #f0f0f0;
+         padding: 15px 0;
+     }
+     .navbar {
+         background-color: gray;
+         padding: 20px 0;
+     }
+
+     /* Notification styling */
+     .notification-btn .badge {
+         font-size: 0.75rem;
+     }
+
+     .notifications {
+         display: none;
+         max-width: 300px;
+         right: 0;
+         top: 40px;
+         z-index: 1000;
+         border: 1px solid #ccc;
+         background-color: #fff;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     }
+
+     .notification-btn:hover .notifications {
+         display: block;
+     }
+
+     .banner {
+         padding: 20px 0;
+         text-align: center;
+         padding-left:-20px;
+          padding-right:-20px;
+
+     }
+
+     .banner h2 {
+         font-size: 1.2rem;
+         color: #007bff;
+     }
+
+     .banner i {
+         font-size: 2rem;
+         color: #007bff;
+         margin-bottom: 10px;
+     }
+
+     /* Added CSS */
+     .cart-link {
+         position: relative;
+         display: inline-block;
+         color: inherit;
+         text-decoration: none;
+     }
+
+     .cart-icon-bg {
+         position: relative;
+         display: inline-block;
+         background-color: red;
+         border-radius: 50%;
+         padding: 5px;
+     }
+
+     .cart-count {
+         position: absolute;
+         top: -10px;
+         right: -10px;
+         font-size: 0.8rem;
+     }
+
+     /* Custom Mobile Styles */
+     @media (max-width: 767px) {
+         .call-us-section {
+             margin-bottom: 20px;
+             text-align: center;
+         }
+         .call-us-section .toll-free-text {
+             margin-top: 5px;
+         }
+         .middle-header .col-md-6 {
+             text-align: center;
+         }
+         .middle-header h1 {
+             margin-top: 10px;
+         }
+     }
+</style>
+
+
+
+<script>
+    const searchInput = document.getElementById('search_query');
+    const voiceSearchBtn = document.getElementById('voice_search_btn');
+
+    voiceSearchBtn.addEventListener('click', () => {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+            const voiceInput = event.results[0][0].transcript;
+            searchInput.value = voiceInput;
+        };
+
+        recognition.start();
+    });
+</script>
+
+<style>
+    @keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translate3d(0, 40px, 0);
+}
+to {
+opacity: 1;
+transform: none;
+}
+}
+
+.animated {
+animation-duration: 1s;
+animation-fill-mode: both;
+}
+
+.fadeInUp {
+animation-name: fadeInUp;
+}
+
+</style>
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    /* Section Styles */
+    .product-section {
+        margin-bottom: 40px;
+    }
+    .product-section h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+    .product-row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 10px; /* To accommodate scroll buttons */
+    }
+    .product-row::-webkit-scrollbar {
+        display: none;
+    }
+    .product {
+        flex: 0 0 auto;
+        width: 200px;
+        margin-right: 20px;
+        text-align: center;
+        border: 1px solid #e1e4e8;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .product img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .price {
+        font-weight: bold;
+        color: #28a745;
+        margin-top: 10px;
+    }
+    .old-price {
+        text-decoration: line-through;
+        margin-left: 5px;
+        color: #dc3545;
+    }
+    .icons {
+        margin-top: 10px;
+    }
+    .icons i {
+        color: #333;
+        margin: 0 8px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .icons i:hover {
+        color: #007bff;
+    }
+    /* Scroll Buttons */
+    .scroll-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+    .scroll-left {
+        left: 10px;
+    }
+    .scroll-right {
+        right: 10px;
+    }
+</style>
+
+
+<style>
+    /* Cookie Consent Banner Styles */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #343a40;
+        color: white;
+        padding: 15px 20px;
+        text-align: center;
+        display: none; /* Hidden by default */
+        z-index: 1000;
+    }
+    .cookie-banner button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+    .cookie-banner button:hover {
+        background-color: #218838;
+    }
+</style>
+
+<style>
+    .footer {
+        background-color: #f8f8f8;
+        color: #333;
+
+    }
+
+    .footer .sign-up {
+        background-color: #20c997;
+        color: #333;
+        padding: 30px 0;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .footer .sign-up input[type="email"] {
+        width: 60%;
+        margin-right: 10px;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .footer .sign-up button {
+        background-color: #ffffff;
+        color: #343a40;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .footer h6 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .footer ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer ul li a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .footer ul li a:hover {
+        color: #20c997;
+    }
+
+    .footer .contact-info p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+        border-top: 1px solid #495057;
+        padding: 20px 0;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .footer-bottom p {
+        margin: 10px 0;
+    }
+
+    .footer-bottom img {
+        width: 40px;
+        margin: 0 5px;
+    }
+
+    .footer-bottom a {
+        color: #333;
+        text-decoration: none;
+        margin: 0 10px;
+        transition: color 0.2s;
+    }
+
+    .footer-bottom a:hover {
+        color: #20c997;
+    }
+</style>
+<style>
+    .footer-column {
+        border-right: 1px solid #ddd;
+        padding-right: 20px;
+        margin-right: -1px; /* to avoid double border between columns */
+    }
+
+    .footer-column:last-child {
+        border-right: none; /* Remove the border from the last column */
+    }
+</style>
+<style>
+
+    .rating i {
+color: #f5c518; /* Customize the color of the stars */
+margin-right: 2px;
+}
+
+     /* Basic Styling */
+     .logo-container {
+         width: 60px;
+         height: 60px;
+     }
+     .logo {
+         width: 100%;
+         height: 100%;
+         object-fit: contain;
+     }
+     .call-us-section {
+         font-size: 18px;
+     }
+     .navbar-nav .nav-link {
+         font-weight: 500;
+         color: #fff;
+         transition: color 0.3s ease;
+     }
+
+     /* Additional Styling for Professional Look */
+     header .container {
+         max-width: 1200px;
+     }
+
+     header h1 {
+         font-size: 1.5rem;
+         color: #333;
+     }
+
+     .call-us-section .call-us-text {
+         font-weight: bold;
+         color: #007bff;
+     }
+
+     .call-us-section .toll-free-text {
+         font-size: 1rem;
+         color: #6c757d;
+     }
+
+     header .btn-group .btn,
+     header .btn-outline-secondary {
+         border-radius: 20px;
+         font-size: 0.875rem;
+         padding: 0.375rem 1rem;
+     }
+
+
+     .navbar .navbar-nav .dropdown-menu {
+         border-radius: 0.5rem;
+         z-index: 1000;
+     }
+
+     .navbar .fa-shopping-bag {
+         font-size: 1.5rem;
+     }
+
+     .navbar .form-control {
+         border-radius: 20px;
+         font-size: 0.875rem;
+     }
+
+     .navbar .btn-outline-success {
+         border-radius: 20px;
+         font-size: 0.875rem;
+     }
+
+     /* Specific styling for increased height */
+     .navbar-expand-lg .navbar-nav .nav-link {
+         padding-top: 1rem;
+         padding-bottom: 1rem;
+     }
+
+     /* Color and Spacing Adjustments */
+     .top-header {
+         background-color: white;
+         padding: 10px 0;
+     }
+     .middle-header {
+         background-color: #f0f0f0;
+         padding: 15px 0;
+     }
+     .navbar {
+         background-color: gray;
+         padding: 20px 0;
+     }
+
+     /* Notification styling */
+     .notification-btn .badge {
+         font-size: 0.75rem;
+     }
+
+     .notifications {
+         display: none;
+         max-width: 300px;
+         right: 0;
+         top: 40px;
+         z-index: 1000;
+         border: 1px solid #ccc;
+         background-color: #fff;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     }
+
+     .notification-btn:hover .notifications {
+         display: block;
+     }
+
+     .banner {
+         padding: 20px 0;
+         text-align: center;
+         padding-left:-20px;
+          padding-right:-20px;
+
+     }
+
+     .banner h2 {
+         font-size: 1.2rem;
+         color: #007bff;
+     }
+
+     .banner i {
+         font-size: 2rem;
+         color: #007bff;
+         margin-bottom: 10px;
+     }
+
+     /* Added CSS */
+     .cart-link {
+         position: relative;
+         display: inline-block;
+         color: inherit;
+         text-decoration: none;
+     }
+
+     .cart-icon-bg {
+         position: relative;
+         display: inline-block;
+         background-color: red;
+         border-radius: 50%;
+         padding: 5px;
+     }
+
+     .cart-count {
+         position: absolute;
+         top: -10px;
+         right: -10px;
+         font-size: 0.8rem;
+     }
+
+     /* Custom Mobile Styles */
+     @media (max-width: 767px) {
+         .call-us-section {
+             margin-bottom: 20px;
+             text-align: center;
+         }
+         .call-us-section .toll-free-text {
+             margin-top: 5px;
+         }
+         .middle-header .col-md-6 {
+             text-align: center;
+         }
+         .middle-header h1 {
+             margin-top: 10px;
+         }
+     }
+</style>
+
+
+
+<style>
+    .featured-product {
+    font-family: 'Roboto', sans-serif; /* Use the professional font */
+    font-size: 2.0rem; /* Adjust the size as needed */
+    letter-spacing: -0.1rem; /* Adjust the spacing as needed */
+    font-weight: 900; /* Bold text */
+    color: #333; /* Dark grey color for text */
+    text-align: center; /* Center align text */
+    margin: 20px 0; /* Space above and below */
+}
+
+</style>
+
+
+<style>
+    h3.featured-product {
+        margin-top: 20px; /* Adjust top margin for spacing */
+        margin-bottom: 20px; /* Adjust bottom margin for spacing */
+        color: #343a40; /* Text color for the heading */
+        font-weight: bold; /* Bold font weight */
+        text-transform: uppercase; /* Uppercase text */
+        text-align: center; /* Center align the text */
+        position: relative; /* Position relative for the pseudo-element */
+    }
+
+    h3.featured-product::after {
+        content: ""; /* Empty content for the pseudo-element */
+        display: block; /* Display as block to take full width */
+        width: 40px; /* Width of the underline */
+        height: 2px; /* Height of the underline */
+        background-color: #20c997; /* Color of the underline */
+        position: absolute; /* Position absolute to overlay on top */
+        bottom: -5px; /* Position the underline slightly below */
+        left: 50%; /* Center the underline horizontally */
+        transform: translateX(-50%); /* Adjust for centering */
+    }
+</style>
+
+
+<!-- Add this to your homepage template -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<div id="chatbot-icon" class="chatbot-icon">
+    <i class="fas fa-comments"></i>
+</div>
+<div id="chatbot" class="chatbot-container">
+    <div id="chatbot-header">
+        <span>Support Chatbot</span>
+        <button id="close-chatbot"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="chatbot-messages" class="chatbot-messages">
+        <!-- Messages will appear here -->
+    </div>
+    <div class="chatbot-input-container">
+        <input id="chatbot-input" type="text" placeholder="Type your message..." />
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<style>
+    .chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 100px; /* Added padding from the right */
+        background: #007bff;
+        color: #fff;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+    .chatbot-icon i {
+        font-size: 24px;
+    }
+    .chatbot-container {
+        position: fixed;
+        bottom: 80px; /* Moved higher */
+        right: 30px; /* Added padding from the right */
+        width: 350px;
+        height: 500px; /* Increased height */
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        background: #fff;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 999;
+        transition: transform 0.3s ease-in-out;
+        transform: scale(0);
+        transform-origin: bottom right;
+    }
+    .chatbot-container.show {
+        display: flex;
+        transform: scale(1);
+    }
+    #chatbot-header {
+        background: #007bff;
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #chatbot-header button {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    #chatbot-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        max-height: 400px;
+    }
+    .chatbot-input-container {
+        display: flex;
+        border-top: 1px solid #ccc;
+    }
+    #chatbot-input {
+        border: none;
+        padding: 10px;
+        flex: 1;
+        border-radius: 0 0 0 10px;
+    }
+    #send-message {
+        background: #007bff;
+        border: none;
+        color: #fff;
+        padding: 10px;
+        border-radius: 0 0 10px 0;
+        cursor: pointer;
+    }
+</style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatbotIcon = document.getElementById('chatbot-icon');
+        const chatbotContainer = document.getElementById('chatbot');
+        const closeChatbotButton = document.getElementById('close-chatbot');
+        const sendMessageButton = document.getElementById('send-message');
+        const chatbotInput = document.getElementById('chatbot-input');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+
+        chatbotIcon.addEventListener('click', function() {
+            chatbotContainer.classList.add('show');
+            chatbotIcon.style.display = 'none';
+        });
+
+        closeChatbotButton.addEventListener('click', function() {
+            chatbotContainer.classList.remove('show');
+            setTimeout(() => {
+                chatbotContainer.style.display = 'none';
+                chatbotIcon.style.display = 'block';
+            }, 300); // Match the transition duration
+        });
+
+        sendMessageButton.addEventListener('click', function() {
+            const userQuery = chatbotInput.value.trim();
+            if (userQuery) {
+                const userMessage = document.createElement('div');
+                userMessage.textContent = `You: ${userQuery}`;
+                chatbotMessages.appendChild(userMessage);
+
+                fetch('/chatbot/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: new URLSearchParams({
+                        'user_query': userQuery
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const botMessage = document.createElement('div');
+                    botMessage.textContent = `Bot: ${data.response}`;
+                    chatbotMessages.appendChild(botMessage);
+                    chatbotInput.value = '';
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+
+
+{% block content %}
+
+{% endblock %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', function() {
+        const query = searchInput.value;
+
+        if (query.length > 0) {
+            fetch(`/search?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    searchResults.innerHTML = '';
+                    data.results.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.classList.add('product');
+                        productDiv.innerHTML = `
+                            <a href="${product.url}">
+                                <img src="${product.image}" alt="${product.name}">
+                            </a>
+                            <h5>${product.name}</h5>
+                        `;
+                        searchResults.appendChild(productDiv);
+                    });
+                });
+        } else {
+            searchResults.innerHTML = '';
+        }
+    });
+});
+
+</script>
+<!-- Hero Section End -->
+
+
+<div class="footer spad px-lg-5 px-3 py-5 py-md-4">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 footer-column">
+                <h6 class="branchy-logo" style="font-size: 1.5rem; letter-spacing: -0.2rem">
+                    <img class="rounded" src="{% static 'img/logo1.jpg' %}" alt=""> BRANCHY
+                </h6>
+                <div class="contact-info">
+                    <a class="text-decoration-none" href="https://www.google.com/maps?q=4+Durham+Workspace,+PityMe,+Durham+DH1+5JZ,+UK" target="_blank">
+                        <p class="">
+                            <i class="fas fa-map-marker-alt"></i> Address: 4 Durham Workspace, PityMe, Durham DH1 5JZ, UK
+                        </p>
+                    </a>
+                    <p class=""><i class="fas fa-phone-alt"></i> Phone: +447508516836</p>
+                    <a class="text-decoration-none" href="mailto:hello@meliandialogue.com">
+                        <p class="">
+                            <i class="fas fa-envelope"></i> Email: hello@meliandialogue.com
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-3 footer-column">
+                <h6>NAVIGATE</h6>
+                <ul>
+                    <li><a class="" href="{% url 'home-url' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a class="" href="{% url 'product_list' %}"><i class="fas fa-chevron-right"></i> Our Shop</a></li>
+                    <li><a class="" href="{% url 'cart_detail' %}"><i class="fas fa-chevron-right"></i> Shopping Cart</a></li>
+                    <li><a class="" href="{% url 'faq_list' %}"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+                    <li><a class="" href="{% url 'blog_list' %}"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                    <li><a class="" href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-column">
+                <h6>LEGAL</h6>
+                <ul>
+                    <li><a class="" href="{% url 'terms' %}"><i class="fas fa-chevron-right"></i> Terms and Conditions</a></li>
+                    <li><a class="" href="{% url 'privacy' %}"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                    <li><a class="" href="{% url 'cookies' %}"><i class="fas fa-chevron-right"></i> Cookies</a></li>
+                    <li><a class="" href="{% url 'accessibility' %}"><i class="fas fa-chevron-right"></i> Accessibility</a></li>
+                </ul>
+            </div>
+              <div class="col-md-3 footer-column">
+        <h6 class="text-uppercase">Join Our Newsletter Now</h6>
+        <p class="text-dark">Get E-mail updates about our latest shop and special offers.</p>
+        <form method="post" action="{% url 'subscribe' %}" class="newsletter-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required="required">
+            </div>
+            <button type="submit" class="btn btn-success form-control">Subscribe</button>
+        </form>
+        <div class="footer__widget__social mt-3">
+            <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.pinterest.com" target="_blank"><i class="fab fa-pinterest"></i></a>
+        </div>
+    </div>
+
+    <!-- Display messages -->
+    {% if success_message %}
+    <div class="alert alert-success">
+        {{ success_message }}
+    </div>
+    {% endif %}
+
+    {% if error_message %}
+    <div class="alert alert-danger">
+        {{ error_message }}
+    </div>
+    {% endif %}
+        </div>
+     <div class="footer-bottom" style="margin-bottom: 0; padding-bottom: 10px;">
+    <div class="row" style="margin-bottom: 0;">
+        <div class="col-md-6">
+            <p class="text-white" style="margin-bottom: 0;">Powered by Ecommerce © 2024</p>
+        </div>
+        <div class="col-md-6">
+            <img class="w-50" src="{% static 'assets/img/payment-item.png' %}"
+                 alt="Payment Methods" style="display: block; max-width: 100%;">
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+
+<style>
+    .footer-bottom {
+    margin-bottom: 0; /* Remove bottom margin */
+    padding-bottom: 10px; /* Adjust padding as needed */
+}
+
+.footer-bottom .row {
+    margin-bottom: 0; /* Remove margin-bottom from rows */
+}
+
+.footer-bottom p {
+    margin-bottom: 0; /* Remove bottom margin from paragraphs */
+}
+
+.footer-bottom img {
+    display: block; /* Ensure image does not add extra space */
+    max-width: 100%; /* Ensure image scales correctly */
+}
+
+    .footer {
+    background-color: #f8f9fa; /* Light background color */
+}
+
+.footer-bottom {
+    background-color: #343a40; /* Dark background color for bottom footer */
+    color: #fff;
+    font-size: 0.875rem; /* Smaller font size */
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+.footer__widget__social i {
+    color: #333;
+    font-size: 24px;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.footer__widget__social a:hover i {
+    color: #007bff; /* Change icon color on hover */
+    transform: scale(1.1); /* Slightly scale up on hover */
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer {
+    animation: fadeInUp 1s ease-out;
+}
+
+</style>
+
+<script>
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // Function to check cookie consent
+    function checkCookieConsent() {
+        var cookieConsent = getCookie("cookieConsent");
+        if (!cookieConsent) {
+            document.getElementById("cookieBanner").style.display = "block";
+        }
+    }
+
+    // Event listener for Accept button
+    document.getElementById("acceptCookies").addEventListener("click", function () {
+        setCookie("cookieConsent", "accepted", 365);
+        document.getElementById("cookieBanner").style.display = "none";
+    });
+
+    // Check cookie consent on page load
+    checkCookieConsent();
+</script>
+<script>
+    $(document).ready(function(){
+        $('.categories__slider').owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 2
+                },
+                1000: {
+                    items: 3
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function scrollLeft(categoryId) {
+        document.getElementById(categoryId).scrollBy({
+            left: -300,
+            behavior: 'smooth'
+        });
+    }
+
+    function scrollRight(categoryId) {
+        document.getElementById(categoryId).scrollBy({
+            left: 300,
+            behavior: 'smooth'
+        });
+    }
+</script>
+<script>
+    function scrollLeft() {
+        document.getElementById('category-3-row').scrollBy({
+            top: 0,
+            left: -200,
+            behavior: 'smooth'
+        });
+    }
+    function scrollRight() {
+        document.getElementById('category-3-row').scrollBy({
+            top: 0,
+            left: 200,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+<!-- Bootstrap CSS link (place this in the <head> section of your HTML) -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Optional: Bootstrap JavaScript bundle (place this at the end of your <body> section, before </body>) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
+
+<!--px-lg-5 px-3-->
+
+<!-- Js Plugins -->
+<script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'assets/js/mixitup.min.js' %}"></script>
+<script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/665492ba9a809f19fb359301/1hut5qb1c';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const ratings = document.querySelectorAll('.rating');
+
+    ratings.forEach(rating => {
+        const ratingValue = parseInt(rating.dataset.rating);
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('i');
+            star.classList.add('fa');
+            if (i <= ratingValue) {
+                star.classList.add('fa-star');
+            } else {
+                star.classList.add('fa-star-o');
+            }
+            rating.appendChild(star);
+        }
+    });
+});
+
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+ <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 80px; /* Adjusted to move the button higher */
+            right: 20px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        #scrollTopBtn:hover {
+            background-color: #555;
+        }
+    </style>
+
+    <!-- Your content here -->
+    <button onclick="topFunction()" id="scrollTopBtn" title="Go to top">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Get the button
+        var mybutton = document.getElementById("scrollTopBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {
+            scrollFunction()
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document smoothly
+        function topFunction() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
+

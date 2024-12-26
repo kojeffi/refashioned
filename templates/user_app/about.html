@@ -1,0 +1,123 @@
+{% extends 'store/master.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section px-lg-5 px-3" style="background-color: #f4f4f4;">
+    <style>
+        .breadcrumb-section {
+            background-color: #f4f4f4;  /* Soft light grey background for better visibility */
+            padding: 60px 0;
+            color: black;
+        }
+
+        .breadcrumb__text h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: black;
+        }
+
+        .breadcrumb__option {
+            font-size: 16px;
+        }
+
+        .breadcrumb__option a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .breadcrumb__option span {
+            color: black;
+        }
+
+        .breadcrumb__option a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 767px) {
+            .breadcrumb__text h2 {
+                font-size: 28px;
+            }
+
+            .breadcrumb__option {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <div class="container-fluid px-lg-5 px-3">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>About Us</h2>
+                    <div class="breadcrumb__option">
+                        <a href="{% url 'home-url' %}">Home</a>
+                        <span>About Us</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+    <div class="container-fluid px-lg-5 px-3">
+        <div class="page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="about-us-images" style="position: relative;">
+                            <!-- Base image -->
+                            <img src="{% static 'assets/images/Gemini_Generated_Image_12jtmu12jtmu12jt.jpeg' %}"
+                                 alt="About Us" class="about-us-image-large"
+                                 style="width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+
+                            <!-- Overlay image -->
+                            <img src="{% static 'assets/images/Gemini_Generated_Image_4jmcw74jmcw74jmc.jpeg' %}"
+                                 alt="Decorative Overlay"
+                                 style="position: absolute; top: 10%; left: 10%; width: 40%; opacity: 0.7; border-radius: 50%; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);">
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <h5>Who We Are</h5>
+                        <p>Our AI-driven e-commerce platform is dedicated to offering a seamless shopping experience. Leveraging advanced machine learning algorithms, we aim to provide personalized experiences and recommendations to our users.</p>
+
+                        <div class="hidden-content">
+                            <h5>Our Mission</h5>
+                            <p>Our mission is to revolutionize the online shopping landscape by integrating cutting-edge AI technologies. We strive to enhance user engagement, personalize interactions, and optimize overall performance, making shopping more intuitive and enjoyable.</p>
+
+                            <h5>Our Vision</h5>
+                            <p>We envision a future where shopping online is not only convenient but also deeply personalized. Our goal is to become the leading AI-driven e-commerce platform, known for innovation, user-centric design, and exceptional service.</p>
+
+                            <h5>Our Values</h5>
+                            <ul>
+                                <li><strong>Innovation:</strong> Continuously integrating the latest technologies to improve user experience.</li>
+                                <li><strong>Customer-Centricity:</strong> Placing our users at the heart of everything we do.</li>
+                                <li><strong>Integrity:</strong> Maintaining transparency and honesty in all our operations.</li>
+                                <li><strong>Excellence:</strong> Striving for the highest standards in service and quality.</li>
+                            </ul>
+
+                            <h5>Our Story</h5>
+                            <p>Founded with the belief that technology can transform the shopping experience, we have grown into a dynamic platform that combines AI with user-friendly design. From personalized recommendations to dynamic pricing, every feature is designed to cater to the unique needs of our users.</p>
+
+                            <h5>Why Choose Us?</h5>
+                            <p>With our AI-driven approach, we offer a shopping experience like no other. Our platform not only helps you find what you need but also recommends products based on your preferences and behaviors. Join us and experience the future of online shopping today.</p>
+                        </div>
+                        <p class="show-more" onclick="showMore()">Show More</p>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <script>
+                function showMore() {
+                    var hiddenContent = document.querySelector('.hidden-content');
+                    var showMoreButton = document.querySelector('.show-more');
+                    hiddenContent.style.display = 'block';
+                    showMoreButton.style.display = 'none';
+                }
+            </script>
+        </div>
+    </div>
+</main>
+{% endblock %}
