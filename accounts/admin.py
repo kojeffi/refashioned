@@ -26,34 +26,10 @@ class EmailAuthenticationForm(AuthenticationForm):
         return self.cleaned_data
 
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_superuser')
-    search_fields = ('email', 'first_name', 'last_name')
-    ordering = ('email',)
     
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-    )
-
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2', 'is_staff', 'is_superuser'),
-        }),
-    )
-
-    def get_fieldsets(self, request, obj=None):
-        if not obj:
-            return self.add_fieldsets
-        return super().get_fieldsets(request, obj)
-
-
-# Register the custom user model with the admin site
-admin.site.register(CustomUser, CustomUserAdmin)
-
 # Override Django's admin login form
 admin.site.login_form = EmailAuthenticationForm
 
