@@ -4,15 +4,15 @@ from accounts.models import Profile, Cart, CartItem, Order, OrderItem
 from home.models import ShippingAddress
 from products.models import Product, SizeVariant
 
-CustomUser = get_user_model()  # Ensures compatibility with custom user models
+User = get_user_model()  # Ensures compatibility with custom user models
 
 
-# ✅ CustomUser Serializer
+# ✅ User Serializer
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'password', 'confirm_password', 'is_active']
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create user and ensure Profile is created"""
         validated_data.pop('confirm_password')
-        user = CustomUser.objects.create_user(
+        user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
