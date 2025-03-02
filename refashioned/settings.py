@@ -196,15 +196,15 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # Authentication backends
-# AUTHENTICATION_BACKENDS = [
-#     'accounts.backends.CustomAuthBackend',  # Your custom authentication backend
-#     'allauth.account.auth_backends.AuthenticationBackend',  # Django AllAuth backend
-#     'django.contrib.auth.backends.ModelBackend',  # Default Django auth backend
-# ]
-
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'accounts.backends.CustomAuthBackend',  # Your custom authentication backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # Django AllAuth backend
+    'django.contrib.auth.backends.ModelBackend',  # Default Django auth backend
 ]
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',  # Default backend
+# ]
 
 
 # Custom user model
