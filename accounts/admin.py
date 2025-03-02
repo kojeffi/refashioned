@@ -5,6 +5,12 @@ from .models import CustomUser, Profile, Cart, CartItem, Order, OrderItem
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import AuthenticationForm
+from django import forms
+from django.contrib.auth import authenticate
+from .models import CustomUser
 
 # Custom admin login form
 class EmailAuthenticationForm(AuthenticationForm):
