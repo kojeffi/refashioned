@@ -2,6 +2,31 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, Profile, Cart, CartItem, Order, OrderItem
 
+
+from django.contrib.auth.forms import AuthenticationForm
+from django import forms
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.EmailField(label="Email")
+
+admin.site.login_form = CustomAuthenticationForm
+
+
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AdminAuthenticationForm
+from django.contrib.admin.sites import AdminSite
+from .forms import EmailAuthenticationForm
+
+CustomUser = get_user_model()
+
+class CustomAdminSite(AdminSite):
+    login_form = EmailAuthenticationForm
+
+admin.site = CustomAdminSite()
+admin.site.register(CustomUser, UserAdmin)
+
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ("email", "first_name", "last_name", "is_staff", "is_active", "is_superuser")

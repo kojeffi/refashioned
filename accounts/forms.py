@@ -5,6 +5,13 @@ from accounts.models import Profile
 from home.models import ShippingAddress
 
 
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+class EmailAuthenticationForm(AuthenticationForm):
+    username = forms.EmailField(label="Email")
+
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
