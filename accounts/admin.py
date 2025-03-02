@@ -28,8 +28,9 @@ class EmailAuthenticationForm(AuthenticationForm):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_superuser')
-    
+    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active')
+
+
 # Override Django's admin login form
 admin.site.login_form = EmailAuthenticationForm
 
