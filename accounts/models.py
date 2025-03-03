@@ -51,6 +51,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    @property
+    def profile(self):
+        profile, created = Profile.objects.get_or_create(user=self)
+        return profile
+
 
 class Profile(BaseModel):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="profile")
