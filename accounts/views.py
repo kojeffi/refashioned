@@ -386,3 +386,50 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
         return JsonResponse({"message": "Password reset complete. You can now log in with the new password.", "result_code": 200}, status=200)
 
 
+# mpesa
+import requests
+from django.conf import settings
+import base64
+
+class MpesaSTKPushView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        access_token = get_mpesa_access_token()
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "BusinessShortCode": settings.MPESA_SHORTCODE,
+            "Password": base64.b64encode(
+                (settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + "timestamp").encode()
+            ).decode(),
+            "Timestamp": "timestamp",
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": request.data.get("amount"),
+            "PartyA": request.data.get("phone_number"),
+            "PartyB": settings.MPESA_SHORTCODE,
+            "PhoneNumber": request.data.get("phone_number"),
+            "CallBackURL": "https://yourdomain.com/mpesa/callback/",
+            "AccountReference": "Order1234",
+            "TransactionDesc": "Payment for order"
+        }
+
+        response = requests.post(
+            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+            json=payload, headers=headers
+        )
+        return Response(response.json(), status=response.status_code)
+
+class MpesaCallbackView(APIView):
+    def post(self, request):
+        data = request.data
+        print("M-Pesa Callback Data:", data)
+
+        if data["Body"]["stkCallback"]["ResultCode"] == 0:
+            amount = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
+            phone = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
+            print(f"Payment of {amount} received from {phone}")
+
+        return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
