@@ -29,6 +29,8 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+from django.core.exceptions import ObjectDoesNotExist
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
@@ -43,20 +45,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def has_perm(self, perm, obj=None):
-        return self.is_staff or self.is_superuser  # Allow staff and superusers
+        return self.is_staff or self.is_superuser
 
     def has_module_perms(self, app_label):
-        return self.is_staff or self.is_superuser  # Allow staff and superusers
+        return self.is_staff or self.is_superuser
 
     def __str__(self):
         return self.email
 
     @property
     def profile(self):
-        profile, created = Profile.objects.get_or_create(user=self)
-        return profile
+        """Ensure a Profile instance is created if it does not exist"""
+        try:
+            return self._profile
+        except ObjectDoesNotExist:
+            return Profile.objects.create(user=self)
 
-
+            
 class Profile(BaseModel):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="profile")
     is_email_verified = models.BooleanField(default=False)
