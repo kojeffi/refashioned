@@ -123,8 +123,8 @@ def get_mpesa_access_token():
 
 # ✅ JWT Login View
 class LoginView(APIView):
-    authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []  # Remove authentication for login
+    permission_classes = [AllowAny]  # Allow anyone to log in
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -133,7 +133,7 @@ class LoginView(APIView):
         if not user:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(request, email=user.email, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is None:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
