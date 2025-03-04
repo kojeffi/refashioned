@@ -147,10 +147,13 @@ class LoginView(APIView):
         }, status=status.HTTP_200_OK)
     
 
-# ✅ JWT Register View
+# Register View
+from django.db import transaction
+
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -160,16 +163,19 @@ class RegisterView(APIView):
         if CustomUser.objects.filter(email=email).exists():
             return Response({"message": "User already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = CustomUser.objects.create(email=email, first_name=first_name, last_name=last_name)
-        user.set_password(password)
-        user.is_active = False  # Require email verification
-        user.save()
+        with transaction.atomic():  # Ensures database consistency
+            user = CustomUser.objects.create(email=email, first_name=first_name, last_name=last_name)
+            user.set_password(password)
+            user.is_active = False  # Require email verification
+            user.save()
 
-        profile = Profile.objects.create(user=user)
+            # Ensure Profile is created only if it does not exist
+            profile, created = Profile.objects.get_or_create(user=user)
+
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-
         verification_url = f"http://127.0.0.1:3000/verify-email?uidb64={uidb64}&token={token}"
+
         send_mail(
             "Verify Your Email",
             f"Click the link to verify your account: {verification_url}",
@@ -178,7 +184,8 @@ class RegisterView(APIView):
         )
 
         return Response({"message": "User registered, check email for verification"}, status=status.HTTP_201_CREATED)
-    
+
+ 
 
 
 

@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = 'accounts'
 
     def ready(self):
-        import accounts.signals  # Replace 'users' with your app name
+        import accounts.signals  # Import the signals
