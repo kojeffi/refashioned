@@ -50,6 +50,9 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileAPIView(APIView):
@@ -145,7 +148,9 @@ class LoginView(APIView):
     
 
 # ✅ JWT Register View
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
