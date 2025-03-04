@@ -238,7 +238,7 @@ class AddToCartView(APIView):
 
 # ✅ View Cart
 class CartView(APIView):
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

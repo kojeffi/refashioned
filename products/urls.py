@@ -20,7 +20,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.urls import path
 from .models import Category, Product, ProductReview, Wishlist, SizeVariant
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
@@ -28,5 +29,5 @@ urlpatterns = [
     path('products/<slug:slug>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<int:product_id>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
     path('wishlist/', WishlistView.as_view(), name='wishlist'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
