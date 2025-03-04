@@ -123,6 +123,8 @@ def get_mpesa_access_token():
 
 # ✅ JWT Login View
 class LoginView(APIView):
+    authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
