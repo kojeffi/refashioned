@@ -3,13 +3,14 @@ from base.models import BaseModel
 from django.utils.text import slugify
 from django.utils.html import mark_safe
 from django.conf import settings  # ✅ Ensure AUTH_USER_MODEL is used dynamically
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
 class Category(BaseModel):
     category_name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, null=True, blank=True)
-    category_image = models.ImageField(upload_to="categories")  # ✅ Fixed folder name
+    category_image = CloudinaryField('image')  # ✅ Using CloudinaryField
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.category_name)
@@ -70,7 +71,7 @@ class Product(BaseModel):
 
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_images')
-    image = models.ImageField(upload_to='product')
+    image = CloudinaryField('image')  # ✅ Using CloudinaryField
 
     def img_preview(self):
         return mark_safe(f'<img src="{self.image.url}" width="500"/>')

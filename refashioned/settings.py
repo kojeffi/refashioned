@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 SITE_ID = 2
@@ -267,3 +269,16 @@ MPESA_CONSUMER_SECRET = "wb7li3YjaSdvAhNTFFAPOASy5SA2CG2MvHEIaJNdPAAMOhecHZMVnGh
 MPESA_SHORTCODE = "174379"
 MPESA_PASSKEY = "your_passkey"
 MPESA_CREDENTIALS = f"{MPESA_CONSUMER_KEY}:{MPESA_CONSUMER_SECRET}"
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+

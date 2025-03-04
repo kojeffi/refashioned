@@ -6,7 +6,7 @@ from base.models import BaseModel
 from products.models import Product, ColorVariant, SizeVariant, Coupon
 from home.models import ShippingAddress
 import uuid
-
+from cloudinary.models import CloudinaryField
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -54,12 +54,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return profile
 
 
-
 class Profile(BaseModel):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="profile")
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(default=uuid.uuid4, max_length=36, unique=True, editable=False)
-    profile_image = models.ImageField(upload_to='profile', null=True, blank=True)
+    profile_image = CloudinaryField('image', null=True, blank=True)  # ✅ Using CloudinaryField
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     shipping_address = models.ForeignKey(
@@ -71,19 +70,6 @@ class Profile(BaseModel):
 
     def get_cart_count(self):
         return CartItem.objects.filter(cart__is_paid=False, cart__user=self.user).count()
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            try:
-                old_profile = Profile.objects.get(pk=self.pk)
-                if old_profile.profile_image and old_profile.profile_image != self.profile_image:
-                    old_image_path = os.path.join(settings.MEDIA_ROOT, old_profile.profile_image.path)
-                    if os.path.exists(old_image_path):
-                        os.remove(old_image_path)
-            except Profile.DoesNotExist:
-                pass
-        super(Profile, self).save(*args, **kwargs)
-
 
 class Cart(BaseModel):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="cart", null=True, blank=True)
