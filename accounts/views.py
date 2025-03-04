@@ -411,7 +411,7 @@ class MpesaSTKPushView(APIView):
             "PartyA": request.data.get("phone_number"),
             "PartyB": settings.MPESA_SHORTCODE,
             "PhoneNumber": request.data.get("phone_number"),
-            "CallBackURL": "https://yourdomain.com/mpesa/callback/",
+            "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
             "AccountReference": "Order1234",
             "TransactionDesc": "Payment for order"
         }
@@ -433,3 +433,57 @@ class MpesaCallbackView(APIView):
             print(f"Payment of {amount} received from {phone}")
 
         return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+
+
+class StripePaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+            amount = int(cart.get_cart_total_price_after_coupon() * 100)  # Convert to cents
+
+            payment_intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency='usd',
+                payment_method_types=['card']
+            )
+
+            return Response({
+                "message": "Stripe payment initiated",
+                "client_secret": payment_intent.client_secret
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PayPalPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+            total_price = str(cart.get_cart_total_price_after_coupon())
+
+            payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {"payment_method": "paypal"},
+                "transactions": [{
+                    "amount": {"total": total_price, "currency": "USD"},
+                    "description": "Purchase from our store"
+                }],
+                "redirect_urls": {
+                    "return_url": "http://localhost:8000/payment/success",
+                    "cancel_url": "http://localhost:8000/payment/cancel"
+                }
+            })
+
+            if payment.create():
+                approval_url = next(link.href for link in payment.links if link.rel == "approval_url")
+                return Response({"message": "PayPal payment initiated", "approval_url": approval_url}, status=status.HTTP_200_OK)
+
+            return Response({"error": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
