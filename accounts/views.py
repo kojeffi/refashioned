@@ -57,73 +57,43 @@ class ProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        print(f"Authenticated User: {request.user}")  # Debugging line
         if not request.user.is_authenticated:
             return Response({"message": "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
 
         profile = get_object_or_404(Profile, user=request.user)
         serializer = ProfileSerializer(profile)
-
-        # Generate JWT Token
-        refresh = RefreshToken.for_user(request.user)
-
         return Response({
             "message": "Profile retrieved successfully",
             "profile": serializer.data,
-            "access_token": str(refresh.access_token),
-            "refresh_token": str(refresh)
         }, status=status.HTTP_200_OK)
-    
-
-
 
     def post(self, request):
-        """Create a profile for the authenticated user if it doesn't exist"""
         serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             profile, created = Profile.objects.get_or_create(user=request.user, defaults=serializer.validated_data)
-
-            # Generate JWT Token
-            refresh = RefreshToken.for_user(request.user)
-
             return Response({
                 "message": "Profile created successfully" if created else "Profile already exists",
                 "profile": ProfileSerializer(profile).data,
-                "access_token": str(refresh.access_token),
-                "refresh_token": str(refresh)
             }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
-        """Update the authenticated user's profile"""
         profile = get_object_or_404(Profile, user=request.user)
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-
-            # Generate JWT Token
-            refresh = RefreshToken.for_user(request.user)
-
             return Response({
                 "message": "Profile updated successfully",
                 "profile": serializer.data,
-                "access_token": str(refresh.access_token),
-                "refresh_token": str(refresh)
             }, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
-        """Delete the authenticated user's profile"""
         profile = get_object_or_404(Profile, user=request.user)
         profile.delete()
-
         return Response({
             "message": "Profile deleted successfully"
         }, status=status.HTTP_204_NO_CONTENT)
-
-
 
 
 User = get_user_model()
@@ -162,18 +132,17 @@ class LoginView(APIView):
         if user is None:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Ensure email verification before allowing login
         profile = Profile.objects.filter(user=user).first()
         if not profile or not profile.is_email_verified:
             return Response({"message": "Account not verified"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Generate JWT tokens
         refresh = RefreshToken.for_user(user)
         return Response({
             "message": "Login successful",
             "access": str(refresh.access_token),
             "refresh": str(refresh)
         }, status=status.HTTP_200_OK)
+    
 
 # ✅ JWT Register View
 class RegisterView(APIView):
@@ -204,6 +173,9 @@ class RegisterView(APIView):
         )
 
         return Response({"message": "User registered, check email for verification"}, status=status.HTTP_201_CREATED)
+    
+
+
 
 class ActivateAccountView(APIView):
     def get(self, request, uidb64, token):
@@ -319,6 +291,7 @@ class PaymentView(APIView):
             return Response({"message": "Payment creation failed"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 # ✅ Order History View
 class OrderHistoryView(APIView):
@@ -329,7 +302,6 @@ class OrderHistoryView(APIView):
         serializer = OrderSerializer(orders, many=True)
         return Response({"message": "Orders retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
 
-# ✅ Order Detail View
 class OrderDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -337,7 +309,7 @@ class OrderDetailView(APIView):
         order = get_object_or_404(Order, order_id=order_id, user=request.user)
         serializer = OrderSerializer(order)
         return Response({"message": "Order details retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
-
+    
 class DeleteAccountView(APIView):
     def delete(self, request):
         request.user.delete()
@@ -366,12 +338,10 @@ class CustomPasswordResetView(PasswordResetView):
     def form_invalid(self, form):
         return JsonResponse({"message": "Invalid request.", "result_code": 400, "errors": form.errors}, status=400)
 
-# ✅ Password Reset Email Sent Confirmation
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     def get(self, request, *args, **kwargs):
         return JsonResponse({"message": "Password reset email sent successfully.", "result_code": 200}, status=200)
 
-# ✅ Password Reset Confirmation (When User Clicks Reset Link)
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         form.save()
@@ -380,11 +350,10 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_invalid(self, form):
         return JsonResponse({"message": "Invalid reset token or password mismatch.", "result_code": 400, "errors": form.errors}, status=400)
 
-# ✅ Password Reset Complete
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     def get(self, request, *args, **kwargs):
         return JsonResponse({"message": "Password reset complete. You can now log in with the new password.", "result_code": 200}, status=200)
-
+    
 
 # mpesa
 import requests
@@ -421,18 +390,20 @@ class MpesaSTKPushView(APIView):
             json=payload, headers=headers
         )
         return Response(response.json(), status=response.status_code)
+    
+
+
 
 class MpesaCallbackView(APIView):
     def post(self, request):
         data = request.data
         print("M-Pesa Callback Data:", data)
-
         if data["Body"]["stkCallback"]["ResultCode"] == 0:
             amount = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
             phone = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
             print(f"Payment of {amount} received from {phone}")
-
         return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+    
 
 
 class StripePaymentView(APIView):
@@ -456,6 +427,8 @@ class StripePaymentView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 
 class PayPalPaymentView(APIView):
