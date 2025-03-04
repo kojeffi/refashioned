@@ -52,7 +52,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from rest_framework.permissions import AllowAny
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileAPIView(APIView):
