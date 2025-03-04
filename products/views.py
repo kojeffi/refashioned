@@ -215,6 +215,9 @@ from django.shortcuts import get_object_or_404
 from django.urls import path
 from .models import Category, Product, ProductReview, Wishlist, SizeVariant
 from rest_framework import serializers
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.permissions import AllowAny
 from products.serializers import CategorySerializer, ProductSerializer, ProductReviewSerializer, WishlistSerializer 
 class CategoryListView(APIView):
     def get(self, request):
@@ -227,6 +230,7 @@ class CategoryListView(APIView):
         })
 
 class ProductListView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request):
         products = Product.objects.prefetch_related("product_images").all()  # ✅ Optimized DB query
         serializer = ProductSerializer(products, many=True, context={"request": request})  # ✅ Pass request context
