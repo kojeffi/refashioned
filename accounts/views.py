@@ -151,7 +151,8 @@ class LoginView(APIView):
             "refresh": str(refresh),
             "user": {
                 "id": user.id,
-                "name": user.get_full_name(),  # Full name of the user
+                "first_name": user.get_first_name(),  # Full name of the user
+                "last_name": user.get_last_name(),  # Full name of the user
                 "email": user.email,
                 "profile_image": profile.profile_image.url if profile.profile_image else None,
                 "phone": profile.phone_number,
