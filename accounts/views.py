@@ -151,16 +151,18 @@ class LoginView(APIView):
             "refresh": str(refresh),
             "user": {
                 "id": user.id,
-                "first_name": user.get_first_name(),  # Full name of the user
-                "last_name": user.get_last_name(),  # Full name of the user
+                "first_name": user.first_name,  # ✅ Fixed (use field directly)
+                "last_name": user.last_name,  # ✅ Fixed (use field directly)
                 "email": user.email,
                 "profile_image": profile.profile_image.url if profile.profile_image else None,
                 "phone": profile.phone_number,
-                "address": profile.address,
-                "is_admin": user.is_staff,  # If the user is an admin
+                "bio": profile.bio,  # ✅ Added profile bio
+                "shipping_address": profile.shipping_address.address if profile.shipping_address else None,
+                "cart_count": profile.get_cart_count(),  # ✅ Display cart items count
+                "is_admin": user.is_staff,  # ✅ Show if the user is an admin
             }
         }, status=status.HTTP_200_OK)
-   
+
 
 # Register View
 from django.db import transaction
