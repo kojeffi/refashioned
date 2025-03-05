@@ -123,8 +123,9 @@ def get_mpesa_access_token():
 
 # ✅ JWT Login View
 class LoginView(APIView):
-    authentication_classes = []  # Remove authentication for login
+    authentication_classes = []  # No authentication needed for login
     permission_classes = [AllowAny]  # Allow anyone to log in
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -142,12 +143,23 @@ class LoginView(APIView):
             return Response({"message": "Account not verified"}, status=status.HTTP_400_BAD_REQUEST)
 
         refresh = RefreshToken.for_user(user)
+
+        # ✅ Return user details along with tokens
         return Response({
             "message": "Login successful",
             "access": str(refresh.access_token),
-            "refresh": str(refresh)
+            "refresh": str(refresh),
+            "user": {
+                "id": user.id,
+                "name": user.get_full_name(),  # Full name of the user
+                "email": user.email,
+                "profile_image": profile.profile_image.url if profile.profile_image else None,
+                "phone": profile.phone_number,
+                "address": profile.address,
+                "is_admin": user.is_staff,  # If the user is an admin
+            }
         }, status=status.HTTP_200_OK)
-    
+   
 
 # Register View
 from django.db import transaction
