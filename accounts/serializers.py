@@ -39,14 +39,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 # ✅ Profile Serializer
 class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # Now allows updates
+
     class Meta:
         model = Profile
-        fields = ['user', 'phone_number',  'profile_image', 'bio','shipping_address','is_email_verified', 'email_token']
+        fields = ['user', 'phone_number', 'profile_image', 'bio', 'shipping_address', 'is_email_verified', 'email_token']
 
-    def create(self, validated_data):
-        """Ensure Profile is created properly"""
-        profile, created = Profile.objects.get_or_create(user=validated_data['user'], defaults=validated_data)
-        return profile
+    def update(self, instance, validated_data):
+        """Allow updating user details along with profile"""
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            for attr, value in user_data.items():
+                setattr(instance.user, attr, value)
+            instance.user.save()
+
+        return super().update(instance, validated_data)
 
 
 # ✅ CartItem Serializer
