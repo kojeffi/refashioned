@@ -12,6 +12,7 @@ class ShippingAddress(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="shipping_addresses")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    address = models.CharField(max_length=255, blank=True, null=True)  # ✅ Add this field
     street = models.CharField(max_length=100)
     street_number = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=30)
