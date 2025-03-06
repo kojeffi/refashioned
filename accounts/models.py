@@ -8,6 +8,13 @@ from home.models import ShippingAddress
 import uuid
 from cloudinary.models import CloudinaryField
 
+from django.db import models
+from rest_framework import serializers, status
+from django.shortcuts import get_object_or_404
+from django.urls import path
+from .models import Product 
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -152,3 +159,12 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+

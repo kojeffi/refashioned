@@ -10,7 +10,7 @@ from rest_framework import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
-from products.serializers import CategorySerializer, ProductSerializer, ProductReviewSerializer, WishlistSerializer 
+from products.serializers import CategorySerializer, ProductSerializer, ProductReviewSerializer, WishlistSerializer,RelatedProductSerializer
 class CategoryListView(APIView):
     def get(self, request):
         categories = Category.objects.all()
@@ -100,8 +100,8 @@ class RelatedProductsView(APIView):
             category=product.category
         ).exclude(id=product.id).order_by("-newest_product")[:5]  # Order by newest
         
-        serializer = ProductSerializer(related_products, many=True, context={"request": request})
-        
+        serializer = RelatedProductSerializer(related_products, many=True, context={"request": request})
+
         return Response({
             "message": "Related products retrieved successfully",
             "result_code": status.HTTP_200_OK,

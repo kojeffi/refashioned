@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact
+from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact,FAQ
 from home.models import ShippingAddress
 from products.models import Product, SizeVariant
 
@@ -93,3 +93,9 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQ
+        fields = '__all__'
+

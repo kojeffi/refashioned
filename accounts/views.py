@@ -54,6 +54,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
 
+from django.db import models
+from rest_framework import serializers, status
+from django.shortcuts import get_object_or_404
+from django.urls import path
+from .models import Product 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileAPIView(APIView):
     authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
@@ -499,3 +505,44 @@ class ContactAPIView(APIView):
             serializer.save()
             return Response({"message": "Contact form submitted successfully!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class FAQListView(APIView):
+    def get(self, request):
+        faqs = FAQ.objects.all()
+        serializer = FAQSerializer(faqs, many=True)
+        return Response({
+            "message": "FAQs retrieved successfully",
+            "result_code": status.HTTP_200_OK,
+            "data": serializer.data
+        })
+
+    def post(self, request):
+        serializer = FAQSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message": "FAQ added successfully",
+                "result_code": status.HTTP_201_CREATED,
+                "data": serializer.data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FAQDetailView(APIView):
+    def get(self, request, faq_id):
+        faq = get_object_or_404(FAQ, id=faq_id)
+        serializer = FAQSerializer(faq)
+        return Response({
+            "message": "FAQ retrieved successfully",
+            "result_code": status.HTTP_200_OK,
+            "data": serializer.data
+        })
+
+    def delete(self, request, faq_id):
+        faq = get_object_or_404(FAQ, id=faq_id)
+        faq.delete()
+        return Response({
+            "message": "FAQ deleted successfully",
+            "result_code": status.HTTP_204_NO_CONTENT,
+            "data": {}
+        })

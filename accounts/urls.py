@@ -4,7 +4,7 @@ from accounts.views import (
     RegisterView,  ActivateAccountView, LoginView, LogoutView, 
     CartView, AddToCartView, OrderHistoryView, OrderDetailView,
     DeleteAccountView, ProfileAPIView, MpesaSTKPushView, 
-    MpesaCallbackView,StripePaymentView, PayPalPaymentView, ContactAPIView
+    MpesaCallbackView,StripePaymentView, PayPalPaymentView, ContactAPIView,FAQListView,FAQDetailView
 )
 
 from django.contrib.auth import views as auth_views
@@ -52,6 +52,9 @@ urlpatterns = [
 
 
     path('contact/', ContactAPIView.as_view(), name='contact-api'),
+
+    path('faqs/', FAQListView.as_view(), name='faq-list'),
+    path('faqs/<int:faq_id>/', FAQDetailView.as_view(), name='faq-detail'),
 
 
 ]
