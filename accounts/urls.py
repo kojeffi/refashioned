@@ -3,7 +3,8 @@ from django.contrib.auth import views as auth_views
 from accounts.views import (
     RegisterView,  ActivateAccountView, LoginView, LogoutView, 
     CartView, AddToCartView, OrderHistoryView, OrderDetailView,
-    DeleteAccountView, ProfileAPIView, MpesaSTKPushView, MpesaCallbackView,StripePaymentView, PayPalPaymentView
+    DeleteAccountView, ProfileAPIView, MpesaSTKPushView, 
+    MpesaCallbackView,StripePaymentView, PayPalPaymentView, ContactAPIView
 )
 
 from django.contrib.auth import views as auth_views
@@ -48,6 +49,9 @@ urlpatterns = [
     #paypal and stripe
     path('payment/stripe/', StripePaymentView.as_view(), name='stripe-payment'),
     path('payment/paypal/', PayPalPaymentView.as_view(), name='paypal-payment'),
+
+
+    path('contact/', ContactAPIView.as_view(), name='contact-api'),
 
 
 ]

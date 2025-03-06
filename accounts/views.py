@@ -18,7 +18,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from accounts.models import Profile, Cart, CartItem, Order, OrderItem
 from home.models import ShippingAddress
-from accounts.serializers import UserSerializer, CartSerializer, OrderSerializer
+from accounts.serializers import UserSerializer, CartSerializer, OrderSerializer,ContactSerializer
 from base.emails import send_account_activation_email
 from products.models import Product, SizeVariant
 from django.http import JsonResponse
@@ -489,3 +489,13 @@ class PayPalPaymentView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+# Contact API View
+class ContactAPIView(APIView):
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Contact form submitted successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
