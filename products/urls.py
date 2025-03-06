@@ -29,5 +29,6 @@ urlpatterns = [
     path('products/<slug:slug>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<int:product_id>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
     path('wishlist/', WishlistView.as_view(), name='wishlist'),
+    path('wishlist/<int:product_id>/', WishlistView.as_view(), name='wishlist-delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
