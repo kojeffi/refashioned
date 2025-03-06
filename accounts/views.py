@@ -16,7 +16,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from accounts.models import Profile, Cart, CartItem, Order, OrderItem
+from accounts.models import Profile, Cart, CartItem, Order, OrderItem,FAQ
 from home.models import ShippingAddress
 from accounts.serializers import UserSerializer, CartSerializer, OrderSerializer,ContactSerializer
 from base.emails import send_account_activation_email
@@ -24,6 +24,8 @@ from products.models import Product, SizeVariant
 from django.http import JsonResponse
 
 from .models import CustomUser, Profile
+
+from accounts.serializers import FAQSerializer
 
 
 
