@@ -92,3 +92,18 @@ class WishlistView(APIView):
         })
 
 
+#related Products
+class RelatedProductsView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        related_products = Product.objects.filter(
+            category=product.category
+        ).exclude(id=product.id).order_by("-newest_product")[:5]  # Order by newest
+        
+        serializer = ProductSerializer(related_products, many=True, context={"request": request})
+        
+        return Response({
+            "message": "Related products retrieved successfully",
+            "result_code": status.HTTP_200_OK,
+            "data": serializer.data
+        })
