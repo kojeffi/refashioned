@@ -552,45 +552,33 @@ class FAQDetailView(APIView):
 
 
 # views.py
+# views.py
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from rest_auth.registration.views import SocialLoginView
 from rest_framework_simplejwt.tokens import RefreshToken
-from social_django.utils import psa
-from django.contrib.auth import get_user_model
-from .serializers import GoogleAuthSerializer
 
-User = get_user_model()
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
 
-class GoogleLogin(APIView):
-    def post(self, request):
-        serializer = GoogleAuthSerializer(data=request.data)
-        if serializer.is_valid():
-            access_token = serializer.validated_data['access_token']
-            try:
-                # Authenticate the user using the Google access token
-                user = self.authenticate_with_google(access_token)
-                if user:
-                    # Generate JWT tokens
-                    refresh = RefreshToken.for_user(user)
-                    return Response({
-                        'access': str(refresh.access_token),
-                        'refresh': str(refresh),
-                        'user': {
-                            'id': user.id,
-                            'email': user.email,
-                            'first_name': user.first_name,
-                            'last_name': user.last_name,
-                        }
-                    }, status=status.HTTP_200_OK)
-                else:
-                    return Response({'error': 'Authentication failed'}, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def authenticate_with_google(self, access_token):
-        # Use python-social-auth to authenticate the user
-        backend = 'social_core.backends.google.GoogleOAuth2'
-        user = psa(backend).do_auth(access_token)
-        return user
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            user = self.user
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                }
+            }, status=status.HTTP_200_OK)
+        return response
