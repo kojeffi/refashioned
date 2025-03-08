@@ -300,9 +300,6 @@ class CartView(APIView):
 
         serializer = CartSerializer(cart)
         return Response({"message": "Cart retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
-    
-
-    
 # ✅ Payment View
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
