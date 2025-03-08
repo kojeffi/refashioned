@@ -99,6 +99,3 @@ class FAQSerializer(serializers.ModelSerializer):
         model = FAQ
         fields = '__all__'
 
-
-class GoogleAuthSerializer(serializers.Serializer):
-    access_token = serializers.CharField()

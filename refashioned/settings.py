@@ -224,11 +224,6 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
-        'APP': {
-            'client_id': config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'),  # Use your Google OAuth2 client ID
-            'secret': config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'),  # Use your Google OAuth2 client secret
-            'key': ''
-        }
     },
     'facebook': {
         'APP': {
@@ -253,7 +248,6 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v17.0',
     }
 }
-
 
 # Logging configuration
 LOGGING = {

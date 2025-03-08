@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from accounts.views import (
     RegisterView,  ActivateAccountView, LoginView, LogoutView, 
-    CartView, AddToCartView, OrderHistoryView, OrderDetailView, GoogleLogin,
+    CartView, AddToCartView, OrderHistoryView, OrderDetailView,
     DeleteAccountView, ProfileAPIView, MpesaSTKPushView, 
     MpesaCallbackView,StripePaymentView, PayPalPaymentView, ContactAPIView,FAQListView,FAQDetailView
 )
@@ -23,7 +23,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='api_logout'),
     path("activate/<str:uidb64>/<str:token>/", ActivateAccountView.as_view(), name="activate"),
     path('profile/', ProfileAPIView.as_view(), name='profile-api'),
-    path('auth/google/', GoogleLogin.as_view(), name='google-login'),
     
     # Cart and Order management
     path('cart/', CartView.as_view(), name='api_cart'),
@@ -40,17 +39,22 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
+
+
     #mpesa
     path('mpesa/stk-push/', MpesaSTKPushView.as_view(), name='mpesa_stk_push'),
     path('mpesa/callback/', MpesaCallbackView.as_view(), name='mpesa_callback'),
+
 
     #paypal and stripe
     path('payment/stripe/', StripePaymentView.as_view(), name='stripe-payment'),
     path('payment/paypal/', PayPalPaymentView.as_view(), name='paypal-payment'),
 
+
     path('contact/', ContactAPIView.as_view(), name='contact-api'),
 
     path('faqs/', FAQListView.as_view(), name='faq-list'),
     path('faqs/<int:faq_id>/', FAQDetailView.as_view(), name='faq-detail'),
+
 
 ]
