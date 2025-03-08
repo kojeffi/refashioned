@@ -4,6 +4,8 @@ from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact,F
 from home.models import ShippingAddress
 from products.models import Product, SizeVariant, ColorVariant
 
+from products.serializers import ProductImageSerializer
+
 
 CustomUser = get_user_model()  # Ensures compatibility with custom user models
 
@@ -84,10 +86,21 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country']
 
 class ProductSerializer(serializers.ModelSerializer):
-    """Serialize product details for cart items"""
+    product_image = serializers.SerializerMethodField()  # ✅ Fetch first image safely
+    product_images = ProductImageSerializer(many=True, read_only=True)  # ✅ Include all images
+
     class Meta:
         model = Product
-        fields = ['product_name', 'slug', 'price', 'product_description','product_image']
+        fields = [
+            "uid", "product_name", "slug", "price", "product_description",
+            "newest_product", "category", "product_image", "product_images"
+        ]
+
+    def get_product_image(self, obj):
+        """Retrieve the first product image URL if available"""
+        first_image = obj.product_images.all().first()  # Ensure a queryset is used
+        return first_image.image.url if first_image else None  # Return URL or None
+
 
 class SizeVariantSerializer(serializers.ModelSerializer):
     class Meta:
