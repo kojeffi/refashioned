@@ -23,25 +23,28 @@ class CategoryListView(APIView):
 
 class ProductListView(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request):
-        products = Product.objects.prefetch_related("product_images").all()  # ✅ Optimized DB query
-        serializer = ProductSerializer(products, many=True, context={"request": request})  # ✅ Pass request context
+        products = Product.objects.prefetch_related("product_images").all()
+        serializer = ProductSerializer(products, many=True, context={"request": request})  # Pass the request object here
         return Response({
             "message": "Products retrieved successfully",
             "result_code": status.HTTP_200_OK,
             "data": serializer.data
         })
-
+    
+    
 class ProductDetailView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, slug):
-        product = get_object_or_404(Product.objects.prefetch_related("product_images"), slug=slug)  # ✅ Optimize DB query
-        serializer = ProductSerializer(product, context={"request": request})  # ✅ Pass request
+        product = get_object_or_404(Product.objects.prefetch_related("product_images"), slug=slug)
+        serializer = ProductSerializer(product, context={"request": request})  # Pass the request object here
         return Response({
             "message": "Product details retrieved",
             "result_code": status.HTTP_200_OK,
             "data": serializer.data
         })
-    
     
 
 class ProductReviewView(APIView):

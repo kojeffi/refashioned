@@ -6,15 +6,14 @@ class ProductImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
 
     def get_image_url(self, obj):
-        request = self.context.get("request")  
+        request = self.context.get("request")  # Retrieve the request object from the context
         if obj.image:
-            return request.build_absolute_uri(obj.image.url)  
+            return request.build_absolute_uri(obj.image.url)  # Build the absolute URL
         return None
 
     class Meta:
         model = ProductImage
-        fields = ["image_url"]  # ✅ Fixed: Returning full URL
-
+        fields = ["image_url"]
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
