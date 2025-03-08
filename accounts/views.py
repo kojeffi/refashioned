@@ -219,8 +219,11 @@ class RegisterView(APIView):
  
 
 
+from rest_framework.permissions import AllowAny
 
 class ActivateAccountView(APIView):
+    permission_classes = [AllowAny]  # 👈 This allows anyone to access this view
+
     def get(self, request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
@@ -241,6 +244,7 @@ class ActivateAccountView(APIView):
 
         except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             return Response({"message": "Invalid activation link."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ✅ JWT Logout View
 class LogoutView(APIView):
