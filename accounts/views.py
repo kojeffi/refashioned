@@ -535,7 +535,7 @@ class PayPalPaymentView(APIView):
 # Contact API View
 class ContactAPIView(APIView):
     permission_classes = [AllowAny]  # Allow anyone to log in
-    
+
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
@@ -588,3 +588,39 @@ class FAQDetailView(APIView):
             "data": {}
         })
 
+
+
+
+from rest_framework import generics, permissions
+from .models import Blog, Comment
+from .serializers import BlogSerializer, CommentSerializer
+
+class BlogListCreateView(generics.ListCreateAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class CommentCreateView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        blog = Blog.objects.get(pk=self.kwargs['pk'])
+        serializer.save(user=self.request.user, blog=blog)
+
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        blog = Blog.objects.get(pk=self.kwargs['pk'])
+        return Comment.objects.filter(blog=blog)

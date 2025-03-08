@@ -143,3 +143,30 @@ class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = '__all__'
+
+
+
+from rest_framework import serializers
+from .models import Blog, Tag, Comment
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
+
+class BlogSerializer(serializers.ModelSerializer):
+    tag = TagSerializer(read_only=True)
+    comments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Blog
+        fields = ['id', 'title', 'slug', 'cover_image', 'brief', 'content', 'tag', 'date', 'author', 'comments']
+
+    def get_comments(self, obj):
+        comments = Comment.objects.filter(blog=obj)
+        return CommentSerializer(comments, many=True).data
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'blog', 'user', 'content', 'date']

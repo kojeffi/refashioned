@@ -14,6 +14,8 @@ from accounts.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView
 )
+from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView
+
 
 
 urlpatterns = [
@@ -55,6 +57,13 @@ urlpatterns = [
 
     path('faqs/', FAQListView.as_view(), name='faq-list'),
     path('faqs/<int:faq_id>/', FAQDetailView.as_view(), name='faq-detail'),
+
+
+
+    path('blogs/', BlogListCreateView.as_view(), name='blog-list-create'),
+    path('blogs/<int:pk>/', BlogDetailView.as_view(), name='blog-detail'),
+    path('blogs/<int:pk>/comments/', CommentListView.as_view(), name='comment-list'),
+    path('blogs/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment-create'),
 
 
 ]
