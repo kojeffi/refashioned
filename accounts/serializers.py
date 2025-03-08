@@ -87,7 +87,7 @@ class ProductSerializer(serializers.ModelSerializer):
     """Serialize product details for cart items"""
     class Meta:
         model = Product
-        fields = ['product_name', 'slug', 'price', 'product_description']
+        fields = ['product_name', 'slug', 'price', 'product_description','product_image']
 
 class SizeVariantSerializer(serializers.ModelSerializer):
     class Meta:
