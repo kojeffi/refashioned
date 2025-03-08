@@ -21,17 +21,23 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    product_images = ProductImageSerializer(many=True, read_only=True)  # ✅ Fixed: Added related images
+    product_image = serializers.SerializerMethodField()  # ✅ Fetch first image
+    product_images = ProductImageSerializer(many=True, read_only=True)  # ✅ All images
 
     class Meta:
         model = Product
         fields = [
-            "uid", "product_name", "slug", "price", "product_description",  # ⚠️ Rename in model if necessary
-            "newest_product", "category", "product_images"
+            "uid", "product_name", "slug", "price", "product_description",
+            "newest_product", "category", "product_image", "product_images"
         ]
+
+    def get_product_image(self, obj):
+        """Retrieve the first product image URL if available"""
+        image = obj.product_images.first()  # Get the first image
+        return image.image.url if image else None  # Return URL if image exists
+
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):
