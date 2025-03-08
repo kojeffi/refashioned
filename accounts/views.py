@@ -261,13 +261,19 @@ class AddToCartView(APIView):
         product = get_object_or_404(Product, uid=uid)
         cart, _ = Cart.objects.get_or_create(user=request.user, is_paid=False)
 
-        size_name = request.data.get('size')
-        if not size_name:
-            return Response({"error": "Size is required"}, status=status.HTTP_400_BAD_REQUEST)
+        size_name = request.data.get('size')  # ✅ Now optional
 
-        size_variant = get_object_or_404(SizeVariant, size_name=size_name)
+        size_variant = None
+        if size_name:
+            try:
+                size_variant = SizeVariant.objects.get(size_name=size_name)
+            except SizeVariant.DoesNotExist:
+                return Response({"error": f"Size '{size_name}' does not exist."}, status=status.HTTP_400_BAD_REQUEST)
 
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, size_variant=size_variant)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart, product=product, size_variant=size_variant
+        )
+
         if not created:
             cart_item.quantity += 1
             cart_item.save()
@@ -275,7 +281,6 @@ class AddToCartView(APIView):
         return Response({"message": "Item added to cart successfully"}, status=status.HTTP_200_OK)
 
 
-        
 # ✅ View Cart
 class CartView(APIView):
     # authentication_classes = [JWTAuthentication]
