@@ -260,8 +260,13 @@ class AddToCartView(APIView):
     def post(self, request, uid):
         product = get_object_or_404(Product, uid=uid)
         cart, _ = Cart.objects.get_or_create(user=request.user, is_paid=False)
-        size_variant = get_object_or_404(SizeVariant, size_name=request.data.get('size'))
-        
+
+        size_name = request.data.get('size')
+        if not size_name:
+            return Response({"error": "Size is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        size_variant = get_object_or_404(SizeVariant, size_name=size_name)
+
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, size_variant=size_variant)
         if not created:
             cart_item.quantity += 1
@@ -269,6 +274,8 @@ class AddToCartView(APIView):
 
         return Response({"message": "Item added to cart successfully"}, status=status.HTTP_200_OK)
 
+
+        
 # ✅ View Cart
 class CartView(APIView):
     # authentication_classes = [JWTAuthentication]
@@ -544,7 +551,7 @@ class FAQListView(APIView):
 
 class FAQDetailView(APIView):
     permission_classes = [AllowAny]  # 👈 This allows anyone to access this view
-    
+
     def get(self, request, faq_id):
         faq = get_object_or_404(FAQ, id=faq_id)
         serializer = FAQSerializer(faq)
