@@ -520,6 +520,8 @@ class ContactAPIView(APIView):
     
 
 class FAQListView(APIView):
+    permission_classes = [AllowAny]  # 👈 This allows anyone to access this view
+
     def get(self, request):
         faqs = FAQ.objects.all()
         serializer = FAQSerializer(faqs, many=True)
@@ -541,6 +543,8 @@ class FAQListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FAQDetailView(APIView):
+    permission_classes = [AllowAny]  # 👈 This allows anyone to access this view
+    
     def get(self, request, faq_id):
         faq = get_object_or_404(FAQ, id=faq_id)
         serializer = FAQSerializer(faq)
