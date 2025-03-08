@@ -288,18 +288,21 @@ class CartView(APIView):
     def get(self, request):
         print(f"🔍 Authenticated user: {request.user}")
 
-        # Get user's cart
-        cart = Cart.objects.filter(user=request.user, is_paid=False).first()
-        
-        # Fix: Use cart_items instead of items
+        # Optimize query performance using `prefetch_related`
+        cart = Cart.objects.prefetch_related(
+            'cart_items__product',
+            'cart_items__size_variant',
+            'cart_items__color_variant'
+        ).filter(user=request.user, is_paid=False).first()
+
         if not cart or not cart.cart_items.exists():
             return Response({"message": "Cart is empty", "data": None}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = CartSerializer(cart)
         return Response({"message": "Cart retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+    
 
-
-
+    
 # ✅ Payment View
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]

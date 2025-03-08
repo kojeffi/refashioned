@@ -2,7 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact,FAQ
 from home.models import ShippingAddress
-from products.models import Product, SizeVariant
+from products.models import Product, SizeVariant, ColorVariant
+
+from accounts.serializers import P
 
 CustomUser = get_user_model()  # Ensures compatibility with custom user models
 
@@ -82,21 +84,41 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
         model = ShippingAddress
         fields = ['id', 'user', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country']
 
+class ProductSerializer(serializers.ModelSerializer):
+    """Serialize product details for cart items"""
+    class Meta:
+        model = Product
+        fields = ['id', 'product_name', 'slug', 'price', 'product_description']
+
+class SizeVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SizeVariant
+        fields = ['id', 'size_name', 'price']
+
+class ColorVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorVariant
+        fields = ['id', 'color_name', 'price']
 
 class CartItemSerializer(serializers.ModelSerializer):
+    """Serialize cart items with product details"""
+    product = ProductSerializer()  # Include product details
+    size_variant = SizeVariantSerializer()
+    color_variant = ColorVariantSerializer()
+
     class Meta:
         model = CartItem
-        fields = '__all__'
+        fields = ['id', 'product', 'size_variant', 'color_variant', 'quantity', 'get_product_price']
 
 class CartSerializer(serializers.ModelSerializer):
-    cart_items = CartItemSerializer(many=True, read_only=True)
+    """Serialize cart with cart items"""
+    cart_items = CartItemSerializer(many=True)
 
     class Meta:
         model = Cart
-        fields = '__all__'  # Ensure cart_items is included
+        fields = ['id', 'user', 'cart_items', 'get_cart_total', 'get_cart_total_price_after']
 
 
-        
 # Contact Serializer
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
