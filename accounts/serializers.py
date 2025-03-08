@@ -87,17 +87,17 @@ class ProductSerializer(serializers.ModelSerializer):
     """Serialize product details for cart items"""
     class Meta:
         model = Product
-        fields = ['id', 'product_name', 'slug', 'price', 'product_description']
+        fields = ['product_name', 'slug', 'price', 'product_description']
 
 class SizeVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = SizeVariant
-        fields = ['id', 'size_name', 'price']
+        fields = ['size_name', 'price']
 
 class ColorVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorVariant
-        fields = ['id', 'color_name', 'price']
+        fields = ['color_name', 'price']
 
 class CartItemSerializer(serializers.ModelSerializer):
     """Serialize cart items with product details"""
@@ -107,7 +107,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ['id', 'product', 'size_variant', 'color_variant', 'quantity', 'get_product_price']
+        fields = ['product', 'size_variant', 'color_variant', 'quantity', 'get_product_price']
 
 class CartSerializer(serializers.ModelSerializer):
     """Serialize cart with cart items"""
@@ -115,7 +115,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'cart_items', 'get_cart_total', 'get_cart_total_price_after']
+        fields = ['user', 'cart_items', 'get_cart_total', 'get_cart_total_price_after_coupon']
 
 
 # Contact Serializer
