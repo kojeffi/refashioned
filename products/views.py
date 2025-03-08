@@ -72,19 +72,26 @@ class WishlistView(APIView):
         })
     
     def post(self, request):
-        product_id = request.data.get('product_id')
+        product_uid = request.data.get('product_uid')  # ✅ Changed from product_id to product_uid
         size_name = request.data.get('size_variant')
-        product = get_object_or_404(Product, id=product_id)
+
+        product = get_object_or_404(Product, uid=product_uid)  # ✅ Fetch using UID instead of ID
         size_variant = get_object_or_404(SizeVariant, size_name=size_name) if size_name else None
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user, product=product, size_variant=size_variant)
+
+        wishlist, created = Wishlist.objects.get_or_create(
+            user=request.user, 
+            product=product, 
+            size_variant=size_variant
+        )
+
         return Response({
             "message": "Added to wishlist" if created else "Already in wishlist",
             "result_code": status.HTTP_201_CREATED,
             "data": {}
         })
-    
-    def delete(self, request, product_id):
-        Wishlist.objects.filter(user=request.user, product_id=product_id).delete()
+
+    def delete(self, request, product_uid):  # ✅ Changed from product_id to product_uid
+        Wishlist.objects.filter(user=request.user, product__uid=product_uid).delete()  # ✅ Use product__uid
         return Response({
             "message": "Removed from wishlist",
             "result_code": status.HTTP_204_NO_CONTENT,
