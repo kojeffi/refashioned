@@ -1,16 +1,12 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact,FAQ
+from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact, FAQ
 from home.models import ShippingAddress
-from products.models import Product, SizeVariant, ColorVariant
+from products.models import Product, SizeVariant, ColorVariant, Category, ProductImage, Coupon, ProductReview, Wishlist
 
-from products.serializers import ProductImageSerializer
+CustomUser = get_user_model()
 
-
-CustomUser = get_user_model()  # Ensures compatibility with custom user models
-
-
-# ✅ User Serializer
+# User Serializer
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
@@ -20,13 +16,11 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
-        """Ensure passwords match"""
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "Passwords must match."})
         return data
 
     def create(self, validated_data):
-        """Create user and ensure Profile is created"""
         validated_data.pop('confirm_password')
         user = CustomUser.objects.create_user(
             email=validated_data['email'],
@@ -34,102 +28,109 @@ class UserSerializer(serializers.ModelSerializer):
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', '')
         )
-
-        # Ensure profile is created
         Profile.objects.get_or_create(user=user)
         return user
 
-
-# ✅ Profile Serializer
+# Profile Serializer
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()  # Now allows updates
+    user = UserSerializer()
 
     class Meta:
         model = Profile
         fields = ['user', 'phone_number', 'profile_image', 'bio', 'shipping_address', 'is_email_verified', 'email_token']
 
     def update(self, instance, validated_data):
-        """Allow updating user details along with profile"""
         user_data = validated_data.pop('user', None)
         if user_data:
             for attr, value in user_data.items():
                 setattr(instance.user, attr, value)
             instance.user.save()
-
         return super().update(instance, validated_data)
 
-
-# ✅ CartItem Serializer
-# ✅ OrderItem Serializer
-class OrderItemSerializer(serializers.ModelSerializer):
-    product_name = serializers.ReadOnlyField(source='product.name')
-    size_name = serializers.ReadOnlyField(source='size_variant.size_name')
-
+# Category Serializer
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderItem
-        fields = ['id', 'order', 'product', 'product_name', 'size_variant', 'size_name', 'quantity', 'price']
+        model = Category
+        fields = ['category_name', 'slug', 'category_image']
 
-
-# ✅ Order Serializer
-class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True, source='orderitem_set')
-
+# Product Image Serializer
+class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
-        fields = ['id', 'user', 'order_id', 'items', 'order_date', 'status', 'total_price']
+        model = ProductImage
+        fields = ['image']
 
-
-# ✅ Shipping Address Serializer
-class ShippingAddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShippingAddress
-        fields = ['id', 'user', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country']
-
+# Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
-    product_image = serializers.SerializerMethodField()  # ✅ Fetch first image safely
-    product_images = ProductImageSerializer(many=True, read_only=True)  # ✅ Include all images
+    images = ProductImageSerializer(many=True, source='product_images', read_only=True)
 
     class Meta:
         model = Product
-        fields = [
-            "uid", "product_name", "slug", "price", "product_description",
-            "newest_product", "category", "product_image", "product_images"
-        ]
+        fields = ['product_name', 'slug', 'category', 'price', 'product_description', 'newest_product', 'images']
 
-    def get_product_image(self, obj):
-        """Retrieve the first product image URL if available"""
-        first_image = obj.product_images.all().first()  # Ensure a queryset is used
-        return first_image.image.url if first_image else None  # Return URL or None
-
-
+# Size Variant Serializer
 class SizeVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = SizeVariant
         fields = ['size_name', 'price']
 
+# Color Variant Serializer
 class ColorVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorVariant
         fields = ['color_name', 'price']
 
+# Cart Item Serializer
 class CartItemSerializer(serializers.ModelSerializer):
-    """Serialize cart items with product details"""
-    product = ProductSerializer()  # Include product details
-    size_variant = SizeVariantSerializer()
-    color_variant = ColorVariantSerializer()
+    product = ProductSerializer()
 
     class Meta:
         model = CartItem
-        fields = ['product', 'size_variant', 'color_variant', 'quantity', 'get_product_price']
+        fields = ['product', 'quantity', 'size_variant', 'color_variant']
 
+# Cart Serializer
 class CartSerializer(serializers.ModelSerializer):
-    """Serialize cart with cart items"""
     cart_items = CartItemSerializer(many=True)
 
     class Meta:
         model = Cart
-        fields = ['user', 'cart_items', 'get_cart_total', 'get_cart_total_price_after_coupon']
+        fields = ['user', 'is_paid', 'cart_items']
 
+# Order Item Serializer
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    size_variant = SizeVariantSerializer()
+
+    class Meta:
+        model = OrderItem
+        fields = [ 'order', 'product', 'size_variant', 'quantity', 'price']
+
+# Order Serializer
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True, source='orderitem_set')
+
+    class Meta:
+        model = Order
+        fields = [ 'user', 'order_id', 'items', 'order_date', 'status', 'total_price']
+
+# Coupon Serializer
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ['coupon_code', 'is_expired', 'discount_amount', 'minimum_amount']
+
+# Product Review Serializer
+class ProductReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductReview
+        fields = [ 'product', 'user', 'likes', 'dislikes', 'stars', 'content', 'date_added']
+
+# Wishlist Serializer
+class WishlistSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = Wishlist
+        fields = ['user', 'product', 'size_variant', 'added_on']
 
 # Contact Serializer
 class ContactSerializer(serializers.ModelSerializer):
@@ -137,8 +138,8 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = '__all__'
 
+# FAQ Serializer
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = '__all__'
-
