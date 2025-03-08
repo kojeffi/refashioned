@@ -4,7 +4,6 @@ from accounts.models import Profile, Cart, CartItem, Order, OrderItem, Contact,F
 from home.models import ShippingAddress
 from products.models import Product, SizeVariant, ColorVariant
 
-from accounts.serializers import P
 
 CustomUser = get_user_model()  # Ensures compatibility with custom user models
 
