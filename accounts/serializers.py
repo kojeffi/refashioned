@@ -83,10 +83,18 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country']
 
 
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+
 class CartSerializer(serializers.ModelSerializer):
+    cart_items = CartItemSerializer(many=True, read_only=True)  # Include related CartItems
+
     class Meta:
         model = Cart
-        fields = '__all__'  
+        fields = '__all__'
+
 
 # Contact Serializer
 class ContactSerializer(serializers.ModelSerializer):
