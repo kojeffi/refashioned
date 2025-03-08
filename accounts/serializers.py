@@ -89,13 +89,14 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CartSerializer(serializers.ModelSerializer):
-    cart_items = CartItemSerializer(many=True, read_only=True)  # Include related CartItems
+    cart_items = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
-        fields = '__all__'
+        fields = '__all__'  # Ensure cart_items is included
 
 
+        
 # Contact Serializer
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:

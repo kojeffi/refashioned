@@ -286,49 +286,17 @@ class CartView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Debugging: Check user authentication
         print(f"🔍 Authenticated user: {request.user}")
 
-        # Retrieve the user's active cart
+        # Get user's cart
         cart = Cart.objects.filter(user=request.user, is_paid=False).first()
-        if not cart or not cart.items.exists():
+        
+        # Fix: Use cart_items instead of items
+        if not cart or not cart.cart_items.exists():
             return Response({"message": "Cart is empty", "data": None}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = CartSerializer(cart)
         return Response({"message": "Cart retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        product_uid = request.data.get('product_uid')
-        size = request.data.get('size')
-
-        product = get_object_or_404(Product, uid=product_uid)
-        size_variant = get_object_or_404(SizeVariant, size_name=size)
-
-        cart, _ = Cart.objects.get_or_create(user=request.user, is_paid=False)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, size_variant=size_variant)
-
-        if not created:
-            cart_item.quantity += 1
-            cart_item.save()
-
-        return Response({"message": "Item added to cart successfully"}, status=status.HTTP_200_OK)
-
-    def put(self, request):
-        item_id = request.data.get('item_id')
-        quantity = request.data.get('quantity')
-
-        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-        cart_item.quantity = quantity
-        cart_item.save()
-
-        return Response({"message": "Cart updated successfully"}, status=status.HTTP_200_OK)
-
-    def delete(self, request):
-        item_id = request.data.get('item_id')
-        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-        cart_item.delete()
-
-        return Response({"message": "Item removed from cart successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
 
