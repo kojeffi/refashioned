@@ -189,27 +189,33 @@ class RegisterView(APIView):
             return Response({"message": "User already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
         with transaction.atomic():  # Ensures database consistency
-            user = CustomUser.objects.create(email=email, first_name=first_name, last_name=last_name)
+            user = CustomUser.objects.create(
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_active=False  # Require email verification
+            )
             user.set_password(password)
-            user.is_active = False  # Require email verification
             user.save()
 
-            # Ensure Profile is created only if it does not exist
-            profile, created = Profile.objects.get_or_create(user=user)
+            # Create a profile for the user
+            Profile.objects.get_or_create(user=user)
 
-        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-        verification_url = f"http://127.0.0.1:3000/verify-email?uidb64={uidb64}&token={token}"
+            # Generate verification link
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            verification_url = f"http://127.0.0.1:3000/verify-email?uidb64={uidb64}&token={token}"
 
-        send_mail(
-            "Verify Your Email",
-            f"Click the link to verify your account: {verification_url}",
-            settings.EMAIL_HOST_USER,
-            [user.email],
-        )
+            # Send verification email
+            send_mail(
+                "Verify Your Email",
+                f"Click the link to verify your account: {verification_url}",
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False,
+            )
 
         return Response({"message": "User registered, check email for verification"}, status=status.HTTP_201_CREATED)
-
  
 
 
@@ -224,6 +230,7 @@ class ActivateAccountView(APIView):
                 user.is_active = True
                 user.save()
 
+                # Mark the profile as email verified
                 profile = get_object_or_404(Profile, user=user)
                 profile.is_email_verified = True
                 profile.save()
@@ -231,10 +238,9 @@ class ActivateAccountView(APIView):
                 return Response({"message": "Account activated successfully."}, status=status.HTTP_200_OK)
 
             return Response({"message": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return Response({"message": "Invalid activation link."}, status=status.HTTP_400_BAD_REQUEST)
-        
 
+        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+            return Response({"message": "Invalid activation link."}, status=status.HTTP_400_BAD_REQUEST)
 
 # ✅ JWT Logout View
 class LogoutView(APIView):
