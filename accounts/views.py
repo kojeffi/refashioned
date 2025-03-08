@@ -342,7 +342,7 @@ class PaymentView(APIView):
                 "intent": "sale",
                 "payer": {"payment_method": "paypal"},
                 "transactions": [{"amount": {"total": str(cart.get_cart_total_price_after_coupon()), "currency": "USD"}}],
-                "redirect_urls": {"return_url": "http://localhost:8000/payment/success", "cancel_url": "http://localhost:8000/payment/cancel"}
+                "redirect_urls": {"return_url": "https://refashioned.onrender.com/payment/success", "cancel_url": "https://refashioned.onrender.com/payment/cancel"}
             })
 
             if payment.create():
@@ -507,8 +507,8 @@ class PayPalPaymentView(APIView):
                     "description": "Purchase from our store"
                 }],
                 "redirect_urls": {
-                    "return_url": "http://localhost:8000/payment/success",
-                    "cancel_url": "http://localhost:8000/payment/cancel"
+                    "return_url": "https://refashioned.onrender.com/payment/success",
+                    "cancel_url": "https://refashioned.onrender.com/payment/cancel"
                 }
             })
 
