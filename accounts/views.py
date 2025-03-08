@@ -127,6 +127,16 @@ def get_mpesa_access_token():
     data = response.json()
     return data.get("access_token")
 
+# def get_mpesa_access_token():
+#     url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
+#     querystring = {"grant_type": "client_credentials"}
+#     headers = {
+#         "Authorization": f"Basic {settings.MPESA_CREDENTIALS}"
+#     }
+#     response = requests.get(url, headers=headers, params=querystring)
+#     data = response.json()
+#     return data.get("access_token")
+
 
 
 # ✅ JWT Login View
@@ -524,6 +534,8 @@ class PayPalPaymentView(APIView):
 
 # Contact API View
 class ContactAPIView(APIView):
+    permission_classes = [AllowAny]  # Allow anyone to log in
+    
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
