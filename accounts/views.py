@@ -308,31 +308,24 @@ class CartView(APIView):
         if not cart or not cart.cart_items.exists():
             return Response({"message": "Cart is empty", "data": None}, status=status.HTTP_404_NOT_FOUND)
 
-        # Pass the request object to the serializer context
         serializer = CartSerializer(cart, context={'request': request})
-        return Response({"message": "Cart retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
-    
+
+        # Calculate total item count
+        total_count = cart.cart_items.aggregate(total=Sum('quantity'))['total'] or 0
+
+        return Response(
+            {
+                "message": "Cart retrieved successfully",
+                "data": serializer.data,
+                "total_count": total_count
+            },
+            status=status.HTTP_200_OK
+        )
 
 
-    
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        print(f"🔍 Authenticated user: {request.user}")
-
-        # Optimize query performance using `prefetch_related`
-        cart = Cart.objects.prefetch_related(
-            'cart_items__product',
-            'cart_items__size_variant',
-            'cart_items__color_variant'
-        ).filter(user=request.user, is_paid=False).first()
-
-        if not cart or not cart.cart_items.exists():
-            return Response({"message": "Cart is empty", "data": None}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = CartSerializer(cart)
-        return Response({"message": "Cart retrieved successfully", "data": serializer.data}, status=status.HTTP_200_OK)
 # ✅ Payment View
+
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -680,8 +673,8 @@ class ProductSearchView(APIView):
 
         products = Product.objects.filter(
             Q(product_name__icontains=query) |
-            Q(product_description__icontains=query) |  # Change 'description' to 'product_description'
-            Q(category__name__icontains=query)
+            Q(product_description__icontains=query) |
+            Q(category__category_name__icontains=query)  # ✅ Use category_name
         )
 
 
