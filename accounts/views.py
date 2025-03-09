@@ -624,3 +624,25 @@ class CommentListView(generics.ListAPIView):
     def get_queryset(self):
         blog = Blog.objects.get(pk=self.kwargs['pk'])
         return Comment.objects.filter(blog=blog)
+    
+    
+class RemoveFromCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, product_slug):
+        # Get the user's cart
+        cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+        
+        # Find the product to remove
+        product = get_object_or_404(Product, slug=product_slug)
+        
+        # Find the cart item associated with the product
+        cart_item = get_object_or_404(CartItem, cart=cart, product=product)
+        
+        # Remove the item from the cart
+        cart_item.delete()
+        
+        return Response(
+            {"message": "Item removed from cart successfully"},
+            status=status.HTTP_200_OK
+        )

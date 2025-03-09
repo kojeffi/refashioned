@@ -14,7 +14,7 @@ from accounts.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView
 )
-from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView
+from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView, RemoveFromCartView
 
 
 
@@ -29,6 +29,7 @@ urlpatterns = [
     # Cart and Order management
     path('cart/', CartView.as_view(), name='api_cart'),
     path('cart/add/<uuid:uid>/', AddToCartView.as_view(), name='api_add_to_cart'),
+    path('api/cart/remove/<str:product_slug>/', RemoveFromCartView.as_view(), name='remove-from-cart'),
     path('orders/', OrderHistoryView.as_view(), name='api_orders'),
     path('orders/<str:order_id>/', OrderDetailView.as_view(), name='api_order_detail'),
     
