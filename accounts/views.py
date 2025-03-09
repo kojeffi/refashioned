@@ -625,7 +625,7 @@ class CommentListView(generics.ListAPIView):
         blog = Blog.objects.get(pk=self.kwargs['pk'])
         return Comment.objects.filter(blog=blog)
     
-    
+
 class RemoveFromCartView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -646,3 +646,50 @@ class RemoveFromCartView(APIView):
             {"message": "Item removed from cart successfully"},
             status=status.HTTP_200_OK
         )
+    
+
+
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.db.models import Q
+from .models import Product
+from .serializers import ProductSerializer
+
+
+class ProductSearchView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        min_price = request.query_params.get('min_price')
+        max_price = request.query_params.get('max_price')
+        category = request.query_params.get('category')
+
+        if not query:
+            return Response({
+                "message": "Please provide a search query.",
+                "result_code": status.HTTP_400_BAD_REQUEST,
+                "data": []
+            })
+
+        products = Product.objects.filter(
+            Q(product_name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+
+        if min_price:
+            products = products.filter(price__gte=min_price)
+        if max_price:
+            products = products.filter(price__lte=max_price)
+        if category:
+            products = products.filter(category__name__iexact=category)
+
+        serializer = ProductSerializer(products, many=True, context={"request": request})
+        return Response({
+            "message": "Search results retrieved successfully",
+            "result_code": status.HTTP_200_OK,
+            "data": serializer.data
+        })

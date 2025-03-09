@@ -14,7 +14,7 @@ from accounts.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView
 )
-from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView, RemoveFromCartView
+from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView, RemoveFromCartView, ProductSearchView
 
 
 
@@ -65,6 +65,10 @@ urlpatterns = [
     path('blogs/<int:pk>/', BlogDetailView.as_view(), name='blog-detail'),
     path('blogs/<int:pk>/comments/', CommentListView.as_view(), name='comment-list'),
     path('blogs/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment-create'),
+
+
+
+    path('products/search/', ProductSearchView.as_view(), name='product-search'),
 
 
 ]
