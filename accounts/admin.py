@@ -33,6 +33,27 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 # Override Django's admin login form
 admin.site.login_form = EmailAuthenticationForm
+from django.contrib import admin
+from .models import Tag, Blog, Comment
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'tag', 'date')
+    search_fields = ('title', 'author__email')
+    list_filter = ('tag', 'date')
+    prepopulated_fields = {'slug': ('title',)}
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('blog', 'user', 'content', 'date')
+    search_fields = ('blog__title', 'user__email', 'content')
+    list_filter = ('date',)
+
 
 
 

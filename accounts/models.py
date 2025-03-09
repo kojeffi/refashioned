@@ -185,7 +185,7 @@ class Tag(models.Model):
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, max_length=200)
-    cover_image = models.ImageField(upload_to='blog_images/')
+    cover_image = CloudinaryField('image') 
     brief = models.TextField()
     content = models.TextField()
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True)
