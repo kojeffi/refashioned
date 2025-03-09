@@ -474,20 +474,36 @@ class MpesaSTKPushView(APIView):
             if not access_token:
                 return Response({"error": "Failed to get access token"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+            # Ensure amount is a numeric value
+            amount = float(request.data.get("amount"))
+            if not amount or amount <= 0:
+                return Response({"error": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Validate and format the phone number
+            phone_number = request.data.get("phone_number")
+            if not phone_number or len(phone_number) < 10:
+                return Response({"error": "Invalid phone number"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Add country code if missing (e.g., Kenya's code is 254)
+            formatted_phone_number = phone_number if phone_number.startswith("254") else f"254{phone_number[1:]}"
+
             # Prepare the STK Push payload
             payload = {
                 "BusinessShortCode": settings.MPESA_SHORTCODE,
                 "Password": self.generate_password(),
                 "Timestamp": self.get_timestamp(),
                 "TransactionType": "CustomerPayBillOnline",
-                "Amount": request.data.get("amount"),
-                "PartyA": request.data.get("phone_number"),
+                "Amount": amount,  # Use the numeric value
+                "PartyA": formatted_phone_number,  # Use the formatted phone number
                 "PartyB": settings.MPESA_SHORTCODE,
-                "PhoneNumber": request.data.get("phone_number"),
+                "PhoneNumber": formatted_phone_number,  # Use the formatted phone number
                 "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
                 "AccountReference": "Order1234",
                 "TransactionDesc": "Payment for order"
             }
+
+            # Log the payload
+            print("M-Pesa STK Push Payload:", payload)
 
             # Make the STK Push request
             headers = {
@@ -498,6 +514,9 @@ class MpesaSTKPushView(APIView):
                 "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
                 json=payload, headers=headers
             )
+
+            # Log the response
+            print("M-Pesa STK Push Response:", response.json())
 
             # Check for errors
             if response.status_code != 200:
@@ -522,6 +541,7 @@ class MpesaSTKPushView(APIView):
         return datetime.now().strftime("%Y%m%d%H%M%S")
     
 
+    
 
 class MpesaCallbackView(APIView):
     def post(self, request):
