@@ -680,9 +680,10 @@ class ProductSearchView(APIView):
 
         products = Product.objects.filter(
             Q(product_name__icontains=query) |
-            Q(description__icontains=query) |
+            Q(product_description__icontains=query) |  # Change 'description' to 'product_description'
             Q(category__name__icontains=query)
         )
+
 
         if min_price:
             products = products.filter(price__gte=min_price)
