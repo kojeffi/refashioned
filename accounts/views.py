@@ -657,7 +657,6 @@ from django.db.models import Q
 from .models import Product
 from .serializers import ProductSerializer
 
-
 class ProductSearchView(APIView):
     permission_classes = [AllowAny]
 
@@ -666,6 +665,11 @@ class ProductSearchView(APIView):
         min_price = request.query_params.get('min_price')
         max_price = request.query_params.get('max_price')
         category = request.query_params.get('category')
+
+        print(f"Search query: {query}")  # Debugging log
+        print(f"Min price: {min_price}")  # Debugging log
+        print(f"Max price: {max_price}")  # Debugging log
+        print(f"Category: {category}")  # Debugging log
 
         if not query:
             return Response({
