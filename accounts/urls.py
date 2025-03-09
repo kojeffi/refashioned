@@ -67,9 +67,5 @@ urlpatterns = [
     path('blogs/<int:pk>/comments/', CommentListView.as_view(), name='comment-list'),
     path('blogs/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment-create'),
 
-
-
     path('products/search/', ProductSearchView.as_view(), name='product-search'),
-
-
 ]

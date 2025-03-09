@@ -421,42 +421,106 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     
 
 # mpesa
+
 import requests
-from django.conf import settings
 import base64
+from django.conf import settings
+
+def get_mpesa_access_token():
+    try:
+        # M-Pesa OAuth URL
+        url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+        
+        # Encode consumer key and secret in Base64
+        credentials = f"{settings.MPESA_CONSUMER_KEY}:{settings.MPESA_CONSUMER_SECRET}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode()
+        
+        # Set headers
+        headers = {
+            "Authorization": f"Basic {encoded_credentials}"
+        }
+        
+        # Make the request
+        response = requests.get(url, headers=headers)
+        
+        # Log the response for debugging
+        print("M-Pesa OAuth Response:", response.status_code, response.text)
+        
+        # Check for errors
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch access token: {response.status_code} - {response.text}")
+        
+        # Return the access token
+        return response.json().get("access_token")
+    
+    except Exception as e:
+        print("Error in get_mpesa_access_token:", str(e))
+        return None
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import requests
+import base64
+from django.conf import settings
 
 class MpesaSTKPushView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        access_token = get_mpesa_access_token()
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "BusinessShortCode": settings.MPESA_SHORTCODE,
-            "Password": base64.b64encode(
-                (settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + "timestamp").encode()
-            ).decode(),
-            "Timestamp": "timestamp",
-            "TransactionType": "CustomerPayBillOnline",
-            "Amount": request.data.get("amount"),
-            "PartyA": request.data.get("phone_number"),
-            "PartyB": settings.MPESA_SHORTCODE,
-            "PhoneNumber": request.data.get("phone_number"),
-            "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
-            "AccountReference": "Order1234",
-            "TransactionDesc": "Payment for order"
-        }
+        try:
+            # Get the access token
+            access_token = get_mpesa_access_token()
+            if not access_token:
+                return Response({"error": "Failed to get access token"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        response = requests.post(
-            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-            json=payload, headers=headers
-        )
-        return Response(response.json(), status=response.status_code)
+            # Prepare the STK Push payload
+            payload = {
+                "BusinessShortCode": settings.MPESA_SHORTCODE,
+                "Password": self.generate_password(),
+                "Timestamp": self.get_timestamp(),
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": request.data.get("amount"),
+                "PartyA": request.data.get("phone_number"),
+                "PartyB": settings.MPESA_SHORTCODE,
+                "PhoneNumber": request.data.get("phone_number"),
+                "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
+                "AccountReference": "Order1234",
+                "TransactionDesc": "Payment for order"
+            }
+
+            # Make the STK Push request
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+            response = requests.post(
+                "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+                json=payload, headers=headers
+            )
+
+            # Check for errors
+            if response.status_code != 200:
+                return Response({"error": response.text}, status=response.status_code)
+
+            # Return the response
+            return Response(response.json(), status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def generate_password(self):
+        # Generate the password using the shortcode, passkey, and timestamp
+        timestamp = self.get_timestamp()
+        return base64.b64encode(
+            (settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + timestamp).encode()
+        ).decode()
+
+    def get_timestamp(self):
+        # Generate a timestamp in the format YYYYMMDDHHMMSS
+        from datetime import datetime
+        return datetime.now().strftime("%Y%m%d%H%M%S")
     
-
 
 
 class MpesaCallbackView(APIView):
