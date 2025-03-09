@@ -61,6 +61,8 @@ from rest_framework import serializers, status
 from django.shortcuts import get_object_or_404
 from django.urls import path
 from .models import Product 
+from django.db.models import Sum
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileAPIView(APIView):
