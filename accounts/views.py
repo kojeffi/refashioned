@@ -693,3 +693,71 @@ class ProductSearchView(APIView):
             "result_code": status.HTTP_200_OK,
             "data": serializer.data
         })
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+import stripe, paypalrestsdk, requests, base64
+
+class CheckoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+        payment_method = request.data.get("payment_method")
+        
+        if not payment_method:
+            return Response({"message": "Payment method is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        total_amount = cart.get_cart_total_price_after_coupon()
+        
+        if payment_method == "stripe":
+            intent = stripe.PaymentIntent.create(
+                amount=int(total_amount * 100),  # Convert to cents
+                currency='usd',
+            )
+            return Response({
+                "message": "Stripe payment initiated",
+                "data": {"client_secret": intent.client_secret}
+            }, status=status.HTTP_200_OK)
+        
+        elif payment_method == "paypal":
+            payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {"payment_method": "paypal"},
+                "transactions": [{
+                    "amount": {"total": str(total_amount), "currency": "USD"},
+                    "description": "Purchase from our store"
+                }],
+                "redirect_urls": {
+                    "return_url": "https://refashioned.onrender.com/payment/success",
+                    "cancel_url": "https://refashioned.onrender.com/payment/cancel"
+                }
+            })
+            if payment.create():
+                approval_url = next(link.href for link in payment.links if link.rel == "approval_url")
+                return Response({"message": "PayPal payment initiated", "approval_url": approval_url}, status=status.HTTP_200_OK)
+            return Response({"message": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        elif payment_method == "mpesa":
+            access_token = get_mpesa_access_token()
+            headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+            payload = {
+                "BusinessShortCode": settings.MPESA_SHORTCODE,
+                "Password": base64.b64encode((settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + "timestamp").encode()).decode(),
+                "Timestamp": "timestamp",
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": total_amount,
+                "PartyA": request.data.get("phone_number"),
+                "PartyB": settings.MPESA_SHORTCODE,
+                "PhoneNumber": request.data.get("phone_number"),
+                "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
+                "AccountReference": "Order1234",
+                "TransactionDesc": "Payment for order"
+            }
+            response = requests.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", json=payload, headers=headers)
+            return Response(response.json(), status=response.status_code)
+        
+        return Response({"message": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)

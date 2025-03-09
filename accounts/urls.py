@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from accounts.views import (
     RegisterView,  ActivateAccountView, LoginView, LogoutView, 
     CartView, AddToCartView, OrderHistoryView, OrderDetailView,
-    DeleteAccountView, ProfileAPIView, MpesaSTKPushView, 
+    DeleteAccountView, ProfileAPIView, MpesaSTKPushView, CheckoutView,
     MpesaCallbackView,StripePaymentView, PayPalPaymentView, ContactAPIView,FAQListView,FAQDetailView
 )
 
@@ -45,6 +45,7 @@ urlpatterns = [
 
 
     #mpesa
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('mpesa/stk-push/', MpesaSTKPushView.as_view(), name='mpesa_stk_push'),
     path('mpesa/callback/', MpesaCallbackView.as_view(), name='mpesa_callback'),
 
