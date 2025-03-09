@@ -769,6 +769,7 @@ class CheckoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print("Received data:", request.data)  # Log incoming request data
         cart = get_object_or_404(Cart, user=request.user, is_paid=False)
         payment_method = request.data.get("payment_method")
         
@@ -776,6 +777,7 @@ class CheckoutView(APIView):
             return Response({"message": "Payment method is required."}, status=status.HTTP_400_BAD_REQUEST)
         
         total_amount = cart.get_cart_total_price_after_coupon()
+        print("Total amount from cart:", total_amount)  # Log total amount from cart
         
         if payment_method == "stripe":
             intent = stripe.PaymentIntent.create(
@@ -813,7 +815,7 @@ class CheckoutView(APIView):
                 "Password": base64.b64encode((settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + "timestamp").encode()).decode(),
                 "Timestamp": "timestamp",
                 "TransactionType": "CustomerPayBillOnline",
-                "Amount": total_amount,
+                "Amount": total_amount,  # Ensure this is a numeric value
                 "PartyA": request.data.get("phone_number"),
                 "PartyB": settings.MPESA_SHORTCODE,
                 "PhoneNumber": request.data.get("phone_number"),
@@ -821,6 +823,7 @@ class CheckoutView(APIView):
                 "AccountReference": "Order1234",
                 "TransactionDesc": "Payment for order"
             }
+            print("M-Pesa payload:", payload)  # Log M-Pesa payload
             response = requests.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", json=payload, headers=headers)
             return Response(response.json(), status=response.status_code)
         
