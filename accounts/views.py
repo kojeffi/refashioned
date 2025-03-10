@@ -848,3 +848,139 @@ class CheckoutView(APIView):
             return Response(response.json(), status=response.status_code)
         
         return Response({"message": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Machine Learning
+
+from sklearn.neighbors import NearestNeighbors
+import pandas as pd
+from products.models import Product
+
+from accounts.models import OrderItem
+
+
+from sklearn.neighbors import NearestNeighbors
+import pandas as pd
+
+class ProductRecommendationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        orders = OrderItem.objects.all().values('order__user_id', 'product_id')
+        df = pd.DataFrame(list(orders))
+
+        if df.empty:
+            return Response({"message": "No order data available for recommendations."}, status=status.HTTP_200_OK)
+
+        user_product_matrix = df.pivot_table(index='order__user_id', columns='product_id', aggfunc='size', fill_value=0)
+
+        if user_product_matrix.shape[0] < 2:
+            return Response({"message": "Not enough data to generate recommendations."}, status=status.HTTP_200_OK)
+
+        model = NearestNeighbors(metric='cosine', algorithm='brute')
+        model.fit(user_product_matrix)
+
+        user_id = request.user.id
+        if user_id not in user_product_matrix.index:
+            return Response({"message": "No recommendations available for this user."}, status=status.HTTP_200_OK)
+
+        user_index = user_product_matrix.index.get_loc(user_id)
+        
+        # Set `n_neighbors` dynamically
+        n_neighbors = min(5, user_product_matrix.shape[0])
+        distances, indices = model.kneighbors(user_product_matrix.iloc[user_index, :].values.reshape(1, -1), n_neighbors=n_neighbors)
+
+        recommended_product_ids = user_product_matrix.columns[indices.flatten()].tolist()
+        recommended_products = Product.objects.filter(uid__in=recommended_product_ids)
+        serializer = ProductSerializer(recommended_products, many=True)
+
+        return Response({
+            "message": "Product recommendations retrieved successfully",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
+
+
+
+# class ProductRecommendationView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         # Fetch all orders and create a user-product matrix
+#         orders = OrderItem.objects.all().values('order__user', 'product')
+#         df = pd.DataFrame(list(orders))
+#         user_product_matrix = df.pivot_table(index='order__user', columns='product', aggfunc='size', fill_value=0)
+
+#         # Fit the Nearest Neighbors model
+#         model = NearestNeighbors(metric='cosine', algorithm='brute')
+#         model.fit(user_product_matrix)
+
+#         # Get the user's purchase history
+#         user_id = request.user.id
+#         if user_id not in user_product_matrix.index:
+#             return Response({"message": "No recommendations available for this user."}, status=status.HTTP_200_OK)
+
+#         user_index = user_product_matrix.index.get_loc(user_id)
+#         distances, indices = model.kneighbors(user_product_matrix.iloc[user_index, :].values.reshape(1, -1), n_neighbors=5)
+
+#         # Get recommended product IDs
+#         recommended_product_ids = user_product_matrix.columns[indices.flatten()].tolist()
+#         recommended_products = Product.objects.filter(id__in=recommended_product_ids)
+#         serializer = ProductSerializer(recommended_products, many=True)
+
+#         return Response({
+#             "message": "Product recommendations retrieved successfully",
+#             "data": serializer.data
+#         }, status=status.HTTP_200_OK)
+    
+
+
+from datetime import datetime
+
+class DynamicPricingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        base_price = product.price
+
+        # Example: Increase price by 10% during peak hours (10 AM to 6 PM)
+        now = datetime.now().time()
+        if now.hour >= 10 and now.hour <= 18:
+            dynamic_price = base_price * 1.10
+        else:
+            dynamic_price = base_price
+
+        return Response({
+            "message": "Dynamic price calculated successfully",
+            "data": {
+                "product_id": product.id,
+                "base_price": base_price,
+                "dynamic_price": dynamic_price
+            }
+        }, status=status.HTTP_200_OK)
+    
+
+
+class ChatbotView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user_message = request.data.get("message", "").lower()
+
+        # Simple rule-based responses
+        if "hello" in user_message or "hi" in user_message:
+            response = "Hello! How can I assist you today?"
+        elif "price" in user_message:
+            response = "Please provide the product ID for which you want to know the price."
+        elif "order" in user_message:
+            response = "Please provide your order ID for tracking."
+        else:
+            response = "I'm sorry, I didn't understand that. Can you please rephrase?"
+
+        return Response({
+            "message": "Chatbot response generated successfully",
+            "data": {
+                "user_message": user_message,
+                "bot_response": response
+            }
+        }, status=status.HTTP_200_OK)

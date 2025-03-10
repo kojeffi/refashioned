@@ -14,7 +14,7 @@ from accounts.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView
 )
-from .views import BlogListCreateView, BlogDetailView, CommentCreateView, CommentListView, RemoveFromCartView, ProductSearchView
+from .views import BlogListCreateView, BlogDetailView, CommentCreateView,CommentListView, RemoveFromCartView, ProductSearchView, ProductRecommendationView, DynamicPricingView, ChatbotView
 
 
 
@@ -68,4 +68,14 @@ urlpatterns = [
     path('blogs/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment-create'),
 
     path('products/search/', ProductSearchView.as_view(), name='product-search'),
+
+
+
+    #Machine Learning  Urls
+    path('recommendations/', ProductRecommendationView.as_view(), name='product-recommendations'),
+    path('dynamic-pricing/<int:product_id>/', DynamicPricingView.as_view(), name='dynamic-pricing'),
+    path('chatbot/', ChatbotView.as_view(), name='chatbot'),
+
+
+
 ]
