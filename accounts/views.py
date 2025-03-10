@@ -889,7 +889,6 @@ class ProductRecommendationView(APIView):
         # Set `n_neighbors` dynamically
         n_neighbors = min(5, user_product_matrix.shape[0])
         distances, indices = model.kneighbors(user_product_matrix.iloc[user_index, :].values.reshape(1, -1), n_neighbors=n_neighbors)
-
         recommended_product_ids = user_product_matrix.columns[indices.flatten()].tolist()
         recommended_products = Product.objects.filter(uid__in=recommended_product_ids)
         serializer = ProductSerializer(recommended_products, many=True)
