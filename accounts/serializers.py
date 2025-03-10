@@ -99,18 +99,27 @@ class CartSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     size_variant = SizeVariantSerializer()
+    price = serializers.SerializerMethodField()  # Fix here
 
     class Meta:
         model = OrderItem
-        fields = [ 'order', 'product', 'size_variant', 'quantity', 'price']
+        fields = ['order', 'product', 'size_variant', 'quantity', 'price']
 
-# Order Serializer
+    def get_price(self, obj):
+        return obj.calculate_price()  # Ensure this method exists in OrderItem
+
+
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True, source='orderitem_set')
+    items = OrderItemSerializer(many=True, read_only=True, source='order_items')
+    total_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = [ 'user', 'order_id', 'items', 'order_date', 'status', 'total_price']
+        fields = ['user', 'order_id', 'items', 'order_date', 'status', 'order_total_price', 'grand_total', 'total_price']
+
+    def get_total_price(self, obj):
+        return obj.get_order_total_price()  # Ensure this method exists in the Order model
+
 
 # Coupon Serializer
 class CouponSerializer(serializers.ModelSerializer):

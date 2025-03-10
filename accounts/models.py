@@ -114,6 +114,14 @@ class CartItem(BaseModel):
 
 
 class Order(BaseModel):
+    ORDER_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="orders")
     order_id = models.CharField(max_length=100, unique=True)
     order_date = models.DateTimeField(auto_now_add=True)
@@ -126,12 +134,14 @@ class Order(BaseModel):
     mpesa_transaction_id = models.CharField(max_length=100, null=True, blank=True)
     stripe_payment_id = models.CharField(max_length=100, null=True, blank=True)
     paypal_payment_id = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending')  # Added status field
 
     def __str__(self):
         return f"Order {self.order_id} by {self.user.email}"
 
     def get_order_total_price(self):
         return self.order_total_price
+
 
 
 class OrderItem(BaseModel):
@@ -147,6 +157,11 @@ class OrderItem(BaseModel):
 
     def get_total_price(self):
         return self.product_price * self.quantity if self.product_price else 0
+    
+    def calculate_price(self):
+        base_price = self.product.price
+        size_price = self.size_variant.price if self.size_variant else 0
+        return (base_price + size_price) * self.quantity
 
 # Contact Model
 class Contact(models.Model):
