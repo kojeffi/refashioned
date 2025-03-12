@@ -284,3 +284,14 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+
+
+# openai configuration 
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
+# Get OpenAI API Key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Ensure the key is available
+if not OPENAI_API_KEY:
+    raise ValueError("Missing OPENAI_API_KEY in environment variables")

@@ -959,27 +959,50 @@ class DynamicPricingView(APIView):
         }, status=status.HTTP_200_OK)
     
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+import openai
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class ChatbotView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        user_message = request.data.get("message", "").lower()
+        user_message = request.data.get("message", "")
 
-        # Simple rule-based responses
-        if "hello" in user_message or "hi" in user_message:
-            response = "Hello! How can I assist you today?"
-        elif "price" in user_message:
-            response = "Please provide the product ID for which you want to know the price."
-        elif "order" in user_message:
-            response = "Please provide your order ID for tracking."
-        else:
-            response = "I'm sorry, I didn't understand that. Can you please rephrase?"
+        if not user_message:
+            return Response({
+                "message": "No message provided",
+                "data": {"bot_response": "Please enter a message."}
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({
-            "message": "Chatbot response generated successfully",
-            "data": {
-                "user_message": user_message,
-                "bot_response": response
-            }
-        }, status=status.HTTP_200_OK)
+        try:
+            # Send request to OpenAI API
+            openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure your API key is stored in .env
+            response = openai.ChatCompletion.create(
+                model="gpt-4",  # You can use "gpt-3.5-turbo" for a cheaper alternative
+                messages=[{"role": "system", "content": "You are a helpful chatbot."},
+                          {"role": "user", "content": user_message}]
+            )
+
+            bot_response = response["choices"][0]["message"]["content"]
+
+            return Response({
+                "message": "Chatbot response generated successfully",
+                "data": {
+                    "user_message": user_message,
+                    "bot_response": bot_response
+                }
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "message": "Error generating chatbot response",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
