@@ -179,3 +179,10 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'blog', 'user', 'content', 'date']
+
+
+class RelatedProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["product_name", "price", "slug", 'slug', 'category', 'price', 'product_description', 'newest_product', 'images']
+

@@ -850,8 +850,9 @@ class CheckoutView(APIView):
         return Response({"message": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Machine Learning
 
+
+# Machine Learning
 from sklearn.neighbors import NearestNeighbors
 import pandas as pd
 from products.models import Product
@@ -900,37 +901,6 @@ class ProductRecommendationView(APIView):
 
 
 
-# class ProductRecommendationView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         # Fetch all orders and create a user-product matrix
-#         orders = OrderItem.objects.all().values('order__user', 'product')
-#         df = pd.DataFrame(list(orders))
-#         user_product_matrix = df.pivot_table(index='order__user', columns='product', aggfunc='size', fill_value=0)
-
-#         # Fit the Nearest Neighbors model
-#         model = NearestNeighbors(metric='cosine', algorithm='brute')
-#         model.fit(user_product_matrix)
-
-#         # Get the user's purchase history
-#         user_id = request.user.id
-#         if user_id not in user_product_matrix.index:
-#             return Response({"message": "No recommendations available for this user."}, status=status.HTTP_200_OK)
-
-#         user_index = user_product_matrix.index.get_loc(user_id)
-#         distances, indices = model.kneighbors(user_product_matrix.iloc[user_index, :].values.reshape(1, -1), n_neighbors=5)
-
-#         # Get recommended product IDs
-#         recommended_product_ids = user_product_matrix.columns[indices.flatten()].tolist()
-#         recommended_products = Product.objects.filter(id__in=recommended_product_ids)
-#         serializer = ProductSerializer(recommended_products, many=True)
-
-#         return Response({
-#             "message": "Product recommendations retrieved successfully",
-#             "data": serializer.data
-#         }, status=status.HTTP_200_OK)
-    
 
 
 from datetime import datetime
@@ -967,7 +937,14 @@ import openai
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+import os
+import openai
+from dotenv import load_dotenv
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+
 load_dotenv()
 
 class ChatbotView(APIView):
@@ -975,34 +952,29 @@ class ChatbotView(APIView):
 
     def post(self, request):
         user_message = request.data.get("message", "")
+        user_role = request.data.get("user_role", "customer")
 
         if not user_message:
-            return Response({
-                "message": "No message provided",
-                "data": {"bot_response": "Please enter a message."}
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "No message provided", "data": {"bot_response": "Please enter a message."}}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Define a customized system prompt
+        system_prompt = {
+            "customer": "You are a friendly assistant for our company, providing product support and guidance.",
+            "admin": "You are an AI assistant for system administrators, offering technical assistance."
+        }.get(user_role, "You are a helpful chatbot.")
 
         try:
-            # Send request to OpenAI API
-            openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure your API key is stored in .env
-            response = openai.ChatCompletion.create(
-                model="gpt-4",  # You can use "gpt-3.5-turbo" for a cheaper alternative
-                messages=[{"role": "system", "content": "You are a helpful chatbot."},
-                          {"role": "user", "content": user_message}]
-            )
+            openai.api_key = os.getenv("OPENAI_API_KEY")
 
+            messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}]
+
+            response = openai.ChatCompletion.create(model="gpt-4", messages=messages)
             bot_response = response["choices"][0]["message"]["content"]
 
             return Response({
                 "message": "Chatbot response generated successfully",
-                "data": {
-                    "user_message": user_message,
-                    "bot_response": bot_response
-                }
+                "data": {"user_message": user_message, "bot_response": bot_response}
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({
-                "message": "Error generating chatbot response",
-                "error": str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"message": "Error generating chatbot response", "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

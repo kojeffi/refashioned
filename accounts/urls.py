@@ -75,6 +75,7 @@ urlpatterns = [
     path('recommendations/', ProductRecommendationView.as_view(), name='product-recommendations'),
     path('dynamic-pricing/<int:product_id>/', DynamicPricingView.as_view(), name='dynamic-pricing'),
     path('chatbot/', ChatbotView.as_view(), name='chatbot'),
+    
 
 
 
