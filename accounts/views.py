@@ -555,61 +555,6 @@ class MpesaCallbackView(APIView):
     
 
 
-class StripePaymentView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
-            amount = int(cart.get_cart_total_price_after_coupon() * 100)  # Convert to cents
-
-            payment_intent = stripe.PaymentIntent.create(
-                amount=amount,
-                currency='usd',
-                payment_method_types=['card']
-            )
-
-            return Response({
-                "message": "Stripe payment initiated",
-                "client_secret": payment_intent.client_secret
-            }, status=status.HTTP_200_OK)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-
-
-
-class PayPalPaymentView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
-            total_price = str(cart.get_cart_total_price_after_coupon())
-
-            payment = paypalrestsdk.Payment({
-                "intent": "sale",
-                "payer": {"payment_method": "paypal"},
-                "transactions": [{
-                    "amount": {"total": total_price, "currency": "USD"},
-                    "description": "Purchase from our store"
-                }],
-                "redirect_urls": {
-                    "return_url": "https://refashioned.onrender.com/payment/success",
-                    "cancel_url": "https://refashioned.onrender.com/payment/cancel"
-                }
-            })
-
-            if payment.create():
-                approval_url = next(link.href for link in payment.links if link.rel == "approval_url")
-                return Response({"message": "PayPal payment initiated", "approval_url": approval_url}, status=status.HTTP_200_OK)
-
-            return Response({"error": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
 
 # Contact API View
 class ContactAPIView(APIView):
@@ -785,6 +730,192 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 import stripe, paypalrestsdk, requests, base64
 
+# StripePaymentView with Order Completion Logic
+class StripePaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+            amount = int(cart.get_cart_total_price_after_coupon() * 100)  # Convert to cents
+
+            payment_intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency='usd',
+                payment_method_types=['card'],
+                metadata={
+                    'user_id': request.user.id,
+                    'cart_id': cart.id
+                }
+            )
+
+            return Response({
+                "message": "Stripe payment initiated",
+                "client_secret": payment_intent.client_secret
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Stripe Payment Confirmation Webhook Handler
+class StripeWebhookView(APIView):
+    permission_classes = [AllowAny]  # Webhooks need to be accessible without authentication
+
+    def post(self, request):
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+        
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+            )
+            
+            # Handle successful payment completion
+            if event['type'] == 'payment_intent.succeeded':
+                payment_intent = event['data']['object']
+                user_id = payment_intent['metadata']['user_id']
+                cart_id = payment_intent['metadata']['cart_id']
+                
+                user = get_object_or_404(User, id=user_id)
+                cart = get_object_or_404(Cart, id=cart_id, user=user, is_paid=False)
+                
+                # Create order from cart
+                shipping_address = request.user.profile.shipping_address if hasattr(request.user, 'profile') and request.user.profile.shipping_address else None
+                
+                order = Order.objects.create(
+                    user=user,
+                    order_id=f"ORDER-{uuid.uuid4().hex[:8].upper()}",
+                    total_amount=cart.get_cart_total_price_after_coupon(),
+                    shipping_address=shipping_address,
+                    payment_method="Stripe",
+                    payment_id=payment_intent['id'],
+                    is_paid=True
+                )
+                
+                # Transfer cart items to order items
+                for cart_item in cart.cart_items.all():
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        quantity=cart_item.quantity,
+                        size_variant=cart_item.size_variant,
+                        color_variant=cart_item.color_variant,
+                        price=cart_item.get_product_price()
+                    )
+                
+                # Mark cart as paid
+                cart.is_paid = True
+                cart.save()
+                
+                return Response({"message": "Payment processed successfully"}, status=status.HTTP_200_OK)
+                
+            return Response({"message": "Event received but not processed"}, status=status.HTTP_200_OK)
+            
+        except ValueError as e:
+            # Invalid payload
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except stripe.error.SignatureVerificationError as e:
+            # Invalid signature
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# PayPal Payment View with Order Completion Logic
+class PayPalPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+            total_price = str(cart.get_cart_total_price_after_coupon())
+
+            payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {"payment_method": "paypal"},
+                "transactions": [{
+                    "amount": {"total": total_price, "currency": "USD"},
+                    "description": "Purchase from our store"
+                }],
+                "redirect_urls": {
+                    "return_url": f"https://refashioned.onrender.com/payment/paypal/success?user_id={request.user.id}&cart_id={cart.id}",
+                    "cancel_url": "https://refashioned.onrender.com/payment/cancel"
+                }
+            })
+
+            if payment.create():
+                approval_url = next(link.href for link in payment.links if link.rel == "approval_url")
+                return Response({"message": "PayPal payment initiated", "approval_url": approval_url}, status=status.HTTP_200_OK)
+
+            return Response({"error": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# PayPal Success Handler
+class PayPalSuccessView(APIView):
+    permission_classes = [AllowAny]  # This needs to be accessible via redirect
+
+    def get(self, request):
+        payment_id = request.query_params.get('paymentId')
+        payer_id = request.query_params.get('PayerID')
+        user_id = request.query_params.get('user_id')
+        cart_id = request.query_params.get('cart_id')
+        
+        if not all([payment_id, payer_id, user_id, cart_id]):
+            return Response({"error": "Missing required parameters"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            payment = paypalrestsdk.Payment.find(payment_id)
+            
+            if payment.execute({"payer_id": payer_id}):
+                user = get_object_or_404(User, id=user_id)
+                cart = get_object_or_404(Cart, id=cart_id, user=user, is_paid=False)
+                
+                # Get shipping address if available
+                shipping_address = user.profile.shipping_address if hasattr(user, 'profile') and user.profile.shipping_address else None
+                
+                # Create order
+                order = Order.objects.create(
+                    user=user,
+                    order_id=f"ORDER-{uuid.uuid4().hex[:8].upper()}",
+                    total_amount=cart.get_cart_total_price_after_coupon(),
+                    shipping_address=shipping_address,
+                    payment_method="PayPal",
+                    payment_id=payment_id,
+                    is_paid=True
+                )
+                
+                # Transfer cart items to order items
+                for cart_item in cart.cart_items.all():
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        quantity=cart_item.quantity,
+                        size_variant=cart_item.size_variant,
+                        color_variant=cart_item.color_variant,
+                        price=cart_item.get_product_price()
+                    )
+                
+                # Mark cart as paid
+                cart.is_paid = True
+                cart.save()
+                
+                # Redirect to frontend success page
+                return Response({
+                    "message": "Payment completed successfully",
+                    "order_id": order.order_id
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Payment execution failed"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Updated CheckoutView to handle all payment methods consistently
 class CheckoutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -803,6 +934,10 @@ class CheckoutView(APIView):
             intent = stripe.PaymentIntent.create(
                 amount=int(total_amount * 100),  # Convert to cents
                 currency='usd',
+                metadata={
+                    'user_id': request.user.id,
+                    'cart_id': cart.id
+                }
             )
             return Response({
                 "message": "Stripe payment initiated",
@@ -818,7 +953,7 @@ class CheckoutView(APIView):
                     "description": "Purchase from our store"
                 }],
                 "redirect_urls": {
-                    "return_url": "https://refashioned.onrender.com/payment/success",
+                    "return_url": f"https://refashioned.onrender.com/payment/paypal/success?user_id={request.user.id}&cart_id={cart.id}",
                     "cancel_url": "https://refashioned.onrender.com/payment/cancel"
                 }
             })
@@ -829,28 +964,124 @@ class CheckoutView(APIView):
         
         elif payment_method == "mpesa":
             access_token = get_mpesa_access_token()
-            headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+            if not access_token:
+                return Response({"error": "Failed to get access token"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+            phone_number = request.data.get("phone_number")
+            if not phone_number or len(phone_number) < 10:
+                return Response({"error": "Invalid phone number"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            # Format phone number properly
+            formatted_phone_number = phone_number if phone_number.startswith("254") else f"254{phone_number[1:]}"
+            
+            # Generate timestamp and password
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            password = base64.b64encode(
+                (settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + timestamp).encode()
+            ).decode()
+            
+            headers = {
+                "Authorization": f"Bearer {access_token}", 
+                "Content-Type": "application/json"
+            }
+            
             payload = {
                 "BusinessShortCode": settings.MPESA_SHORTCODE,
-                "Password": base64.b64encode((settings.MPESA_SHORTCODE + settings.MPESA_PASSKEY + "timestamp").encode()).decode(),
-                "Timestamp": "timestamp",
+                "Password": password,
+                "Timestamp": timestamp,
                 "TransactionType": "CustomerPayBillOnline",
-                "Amount": total_amount,  # Ensure this is a numeric value
-                "PartyA": request.data.get("phone_number"),
+                "Amount": int(total_amount),  # Ensure this is a numeric value
+                "PartyA": formatted_phone_number,
                 "PartyB": settings.MPESA_SHORTCODE,
-                "PhoneNumber": request.data.get("phone_number"),
+                "PhoneNumber": formatted_phone_number,
                 "CallBackURL": "https://refashioned.onrender.com/mpesa/callback/",
-                "AccountReference": "Order1234",
+                "AccountReference": f"Order-{uuid.uuid4().hex[:8].upper()}",
                 "TransactionDesc": "Payment for order"
             }
+            
             print("M-Pesa payload:", payload)  # Log M-Pesa payload
-            response = requests.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", json=payload, headers=headers)
-            return Response(response.json(), status=response.status_code)
+            
+            response = requests.post(
+                "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", 
+                json=payload, 
+                headers=headers
+            )
+            
+            if response.status_code == 200:
+                return Response({
+                    "message": "M-Pesa payment initiated. Please check your phone to complete the transaction.",
+                    "data": response.json()
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "error": "M-Pesa payment initiation failed", 
+                    "details": response.json()
+                }, status=response.status_code)
         
         return Response({"message": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# Updated M-Pesa Callback View to Complete Order
+class MpesaCallbackView(APIView):
+    permission_classes = [AllowAny]  # Callbacks must be accessible without authentication
+    
+    def post(self, request):
+        data = request.data
+        print("M-Pesa Callback Data:", data)
+        
+        # Check if the payment was successful
+        if data.get("Body", {}).get("stkCallback", {}).get("ResultCode") == 0:
+            try:
+                # Extract payment details from callback metadata
+                callback_metadata = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"]
+                
+                # Extract amount, transaction ID, and phone number
+                amount = next((item["Value"] for item in callback_metadata if item["Name"] == "Amount"), None)
+                mpesa_receipt_number = next((item["Value"] for item in callback_metadata if item["Name"] == "MpesaReceiptNumber"), None)
+                phone_number = next((item["Value"] for item in callback_metadata if item["Name"] == "PhoneNumber"), None)
+                
+                # Find user by phone number (you may need to adjust this logic)
+                profile = Profile.objects.filter(phone_number__endswith=str(phone_number)[-9:]).first()
+                
+                if profile:
+                    user = profile.user
+                    # Find the user's unpaid cart
+                    cart = Cart.objects.filter(user=user, is_paid=False).first()
+                    
+                    if cart:
+                        # Create order
+                        order = Order.objects.create(
+                            user=user,
+                            order_id=f"ORDER-{uuid.uuid4().hex[:8].upper()}",
+                            total_amount=amount,
+                            shipping_address=profile.shipping_address,
+                            payment_method="M-Pesa",
+                            payment_id=mpesa_receipt_number,
+                            is_paid=True
+                        )
+                        
+                        # Transfer cart items to order items
+                        for cart_item in cart.cart_items.all():
+                            OrderItem.objects.create(
+                                order=order,
+                                product=cart_item.product,
+                                quantity=cart_item.quantity,
+                                size_variant=cart_item.size_variant,
+                                color_variant=cart_item.color_variant,
+                                price=cart_item.get_product_price()
+                            )
+                        
+                        # Mark cart as paid
+                        cart.is_paid = True
+                        cart.save()
+                        
+                        print(f"Order {order.order_id} created successfully for payment {mpesa_receipt_number}")
+            
+            except Exception as e:
+                print(f"Error processing M-Pesa callback: {str(e)}")
+        
+        # Always return a 200 OK response to the M-Pesa API
+        return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
 
 # Machine Learning
 from sklearn.neighbors import NearestNeighbors
