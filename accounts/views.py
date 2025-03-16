@@ -1209,3 +1209,56 @@ class ChatbotView(APIView):
 
         except Exception as e:
             return Response({"message": "Error generating chatbot response", "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from .models import Product
+from .serializers import ProductSerializer
+
+class ProductFilterView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Get query parameters
+        min_price = request.query_params.get('min_price')
+        max_price = request.query_params.get('max_price')
+        sort_by = request.query_params.get('sort_by')  # 'price_asc', 'price_desc', 'name_asc', 'name_desc'
+        search_query = request.query_params.get('search')
+
+        # Start with all products
+        products = Product.objects.all()
+
+        # Filter by price range
+        if min_price:
+            products = products.filter(price__gte=min_price)
+        if max_price:
+            products = products.filter(price__lte=max_price)
+
+        # Search by product name or description
+        if search_query:
+            products = products.filter(
+                Q(product_name__icontains=search_query) |
+                Q(product_description__icontains=search_query)
+            )
+
+        # Sort products
+        if sort_by == 'price_asc':
+            products = products.order_by('price')
+        elif sort_by == 'price_desc':
+            products = products.order_by('-price')
+        elif sort_by == 'name_asc':
+            products = products.order_by('product_name')
+        elif sort_by == 'name_desc':
+            products = products.order_by('-product_name')
+
+        # Serialize the filtered and sorted products
+        serializer = ProductSerializer(products, many=True, context={"request": request})
+
+        return Response({
+            "message": "Products filtered successfully",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
