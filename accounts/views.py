@@ -635,7 +635,7 @@ class BlogDetailView(generics.RetrieveUpdateDestroyAPIView):
 class CommentCreateView(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can post comments
 
     def perform_create(self, serializer):
         blog_id = self.kwargs.get('pk')
