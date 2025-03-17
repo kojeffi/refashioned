@@ -1269,3 +1269,61 @@ class ProductFilterView(APIView):
             "message": "Products filtered successfully",
             "data": serializer.data
         }, status=status.HTTP_200_OK)
+    
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from .models import Order
+from .serializers import OrderSerializer
+
+class OrderHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Fetch all orders for the authenticated user, ordered by most recent
+        orders = Order.objects.filter(user=request.user).order_by('-order_date')
+        serializer = OrderSerializer(orders, many=True)
+        return Response({
+            "message": "Orders retrieved successfully",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
+    
+
+
+class OrderDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, order_id):
+        # Fetch the specific order for the authenticated user
+        order = get_object_or_404(Order, order_id=order_id, user=request.user)
+        serializer = OrderSerializer(order)
+        return Response({
+            "message": "Order details retrieved successfully",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
+    
+
+
+class UpdateOrderStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, order_id):
+        # Only allow admin users to update order status
+        if not request.user.is_staff:
+            return Response({"message": "Only admin users can update order status"}, status=status.HTTP_403_FORBIDDEN)
+
+        order = get_object_or_404(Order, order_id=order_id)
+        new_status = request.data.get('status')
+
+        if new_status not in dict(Order.ORDER_STATUS_CHOICES).keys():
+            return Response({"message": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+
+        order.status = new_status
+        order.save()
+
+        return Response({
+            "message": "Order status updated successfully",
+            "data": OrderSerializer(order).data
+        }, status=status.HTTP_200_OK)
