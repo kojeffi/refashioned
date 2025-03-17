@@ -638,8 +638,14 @@ class CommentCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        blog = Blog.objects.get(pk=self.kwargs['pk'])
+        blog_id = self.kwargs.get('pk')
+        try:
+            blog = Blog.objects.get(pk=blog_id)
+        except Blog.DoesNotExist:
+            return Response({"error": "Blog not found"}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer.save(user=self.request.user, blog=blog)
+
 
 class CommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
