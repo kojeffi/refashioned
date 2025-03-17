@@ -644,6 +644,7 @@ class CommentCreateView(generics.CreateAPIView):
         except Blog.DoesNotExist:
             return Response({"error": "Blog not found"}, status=status.HTTP_400_BAD_REQUEST)
         
+        # Automatically set the user to the authenticated user
         serializer.save(user=self.request.user, blog=blog)
 
 
