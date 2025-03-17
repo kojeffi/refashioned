@@ -1327,3 +1327,60 @@ class UpdateOrderStatusView(APIView):
             "message": "Order status updated successfully",
             "data": OrderSerializer(order).data
         }, status=status.HTTP_200_OK)
+    
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Order
+from .serializers import OrderSerializer
+
+class OrderTrackingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, order_id):
+        # Fetch the order for the authenticated user
+        order = get_object_or_404(Order, order_id=order_id, user=request.user)
+        serializer = OrderSerializer(order)
+        return Response({
+            "message": "Order tracking details retrieved successfully",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
+    
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import HttpResponse
+import csv
+from .models import Order
+
+class DownloadOrderHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Fetch all orders for the authenticated user
+        orders = Order.objects.filter(user=request.user).order_by('-order_date')
+
+        # Create a CSV file
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="order_history.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Order ID', 'Order Date', 'Payment Status', 'Shipping Address', 
+            'Payment Mode', 'Order Total', 'Grand Total', 'Status'
+        ])
+
+        for order in orders:
+            writer.writerow([
+                order.order_id, order.order_date, order.payment_status, 
+                order.shipping_address, order.payment_mode, order.order_total_price, 
+                order.grand_total, order.status
+            ])
+
+        return response
+    
+    

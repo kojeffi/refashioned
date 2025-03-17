@@ -14,7 +14,7 @@ from accounts.views import (
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView
 )
-from .views import BlogListCreateView, BlogDetailView, ProductFilterView, CommentCreateView,CommentListView, RemoveFromCartView, ProductSearchView, ProductRecommendationView, DynamicPricingView, ChatbotView,UpdateOrderStatusView
+from .views import BlogListCreateView, BlogDetailView,OrderTrackingView, DownloadOrderHistoryView, ProductFilterView, CommentCreateView,CommentListView, RemoveFromCartView, ProductSearchView, ProductRecommendationView, DynamicPricingView, ChatbotView,UpdateOrderStatusView
 
 
 
@@ -80,8 +80,9 @@ urlpatterns = [
     path('products/filter/', ProductFilterView.as_view(), name='product-filter'),
 
     path('orders/<str:order_id>/update-status/', UpdateOrderStatusView.as_view(), name='update-order-status'),
-    
 
 
 
+    path('orders/tracking/<str:order_id>/', OrderTrackingView.as_view(), name='order-tracking'),
+    path('orders/download/', DownloadOrderHistoryView.as_view(), name='download-order-history'),
 ]
