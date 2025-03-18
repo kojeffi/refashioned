@@ -114,7 +114,7 @@ User = get_user_model()
 # Initialize Stripe and PayPal
 stripe.api_key = settings.STRIPE_SECRET_KEY
 paypalrestsdk.configure({
-    "mode": "sandbox",  # Change to "live" in production
+    "mode": "live",  # Change to "live" in production
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_SECRET,
 })
@@ -128,17 +128,6 @@ def get_mpesa_access_token():
     response = requests.get(url, headers=headers, params=querystring)
     data = response.json()
     return data.get("access_token")
-
-# def get_mpesa_access_token():
-#     url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
-#     querystring = {"grant_type": "client_credentials"}
-#     headers = {
-#         "Authorization": f"Basic {settings.MPESA_CREDENTIALS}"
-#     }
-#     response = requests.get(url, headers=headers, params=querystring)
-#     data = response.json()
-#     return data.get("access_token")
-
 
 
 # ✅ JWT Login View
@@ -835,9 +824,16 @@ class PayPalPaymentView(APIView):
 
     def post(self, request):
         try:
+            # Get the user's cart
             cart = get_object_or_404(Cart, user=request.user, is_paid=False)
+            
+            # Calculate the total price
             total_price = str(cart.get_cart_total_price_after_coupon())
 
+            # Determine the primary key field (id or uid)
+            cart_primary_key = getattr(cart, 'uid', None) or cart.id
+
+            # Create PayPal payment
             payment = paypalrestsdk.Payment({
                 "intent": "sale",
                 "payer": {"payment_method": "paypal"},
@@ -846,7 +842,7 @@ class PayPalPaymentView(APIView):
                     "description": "Purchase from our store"
                 }],
                 "redirect_urls": {
-                    "return_url": f"https://refashioned.onrender.com/payment/paypal/success?user_id={request.user.id}&cart_id={cart.id}",
+                    "return_url": f"https://refashioned.onrender.com/payment/paypal/success?user_id={request.user.id}&cart_id={cart_primary_key}",
                     "cancel_url": "https://refashioned.onrender.com/payment/cancel"
                 }
             })
@@ -858,8 +854,7 @@ class PayPalPaymentView(APIView):
             return Response({"error": "Failed to create PayPal payment"}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)     
 
 # PayPal Success Handler
 class PayPalSuccessView(APIView):
