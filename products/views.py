@@ -47,8 +47,18 @@ class ProductDetailView(APIView):
 class ProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def post(self, request, slug):  # Use `slug` instead of `product_id`
-        product = get_object_or_404(Product, slug=slug)  # Fetch product using `slug`
+    def get(self, request, slug):  # Add GET method to fetch reviews
+        product = get_object_or_404(Product, slug=slug)
+        reviews = Review.objects.filter(product=product)
+        serializer = ProductReviewSerializer(reviews, many=True)
+        return Response({
+            "message": "Reviews fetched successfully",
+            "result_code": status.HTTP_200_OK,
+            "reviews": serializer.data
+        })
+    
+    def post(self, request, slug):  # POST method to add a review
+        product = get_object_or_404(Product, slug=slug)
         serializer = ProductReviewSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, product=product)
@@ -58,8 +68,9 @@ class ProductReviewView(APIView):
                 "data": serializer.data
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-
+    
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
     
