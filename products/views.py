@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.urls import path
 from .models import Category, Product, ProductReview, Wishlist, SizeVariant
+
 from rest_framework import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -49,7 +50,7 @@ class ProductReviewView(APIView):
     
     def get(self, request, slug):  # Add GET method to fetch reviews
         product = get_object_or_404(Product, slug=slug)
-        reviews = Review.objects.filter(product=product)
+        reviews =  ProductReview.objects.filter(product=product)
         serializer = ProductReviewSerializer(reviews, many=True)
         return Response({
             "message": "Reviews fetched successfully",
@@ -70,7 +71,7 @@ class ProductReviewView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    
+
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
     
