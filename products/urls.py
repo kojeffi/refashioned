@@ -30,6 +30,6 @@ urlpatterns = [
     path('products/<int:product_id>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
     path('wishlist/', WishlistView.as_view(), name='wishlist'),
     path('wishlist/<int:product_id>/', WishlistView.as_view(), name='wishlist-delete'),
-    path('products/<int:product_id>/related/', RelatedProductsView.as_view(), name='related-products'),
+    path('products/<slug:slug>/related/', RelatedProductsView.as_view(), name='related-products'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

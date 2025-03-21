@@ -47,7 +47,10 @@ class WishlistSerializer(serializers.ModelSerializer):
 
 
 class RelatedProductSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    product_images = ProductImageSerializer(many=True)
+
     class Meta:
         model = Product
-        fields = ["product_name", "price", "slug"]
+        fields = ["uid", "product_name", "slug", "price", "product_description", "newest_product", "category", "product_images"]
 

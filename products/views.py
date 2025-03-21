@@ -101,11 +101,11 @@ class WishlistView(APIView):
 
 #related Products
 class RelatedProductsView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
+    def get(self, request, slug):
+        product = get_object_or_404(Product, slug=slug)  # Use slug to fetch product
         related_products = Product.objects.filter(
             category=product.category
-        ).exclude(id=product.id).order_by("-newest_product")[:5]  # Order by newest
+        ).exclude(uid=product.uid).order_by("-newest_product")[:5]  # Use uid instead of id
         
         serializer = RelatedProductSerializer(related_products, many=True, context={"request": request})
 
