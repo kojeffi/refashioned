@@ -86,7 +86,7 @@ class Coupon(BaseModel):
 
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Changed User to AUTH_USER_MODEL
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_reviews", blank=True)
     dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="disliked_reviews", blank=True)
     stars = models.IntegerField(default=3, choices=[(i, i) for i in range(1, 6)])
@@ -94,17 +94,25 @@ class ProductReview(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def like_count(self):
-        return self.likes.count()
+        try:
+            return self.likes.count()
+        except Exception as e:
+            print(f"Error counting likes: {e}")
+            return 0
 
     def dislike_count(self):
-        return self.dislikes.count()
+        try:
+            return self.dislikes.count()
+        except Exception as e:
+            print(f"Error counting dislikes: {e}")
+            return 0
 
     def __str__(self):
         return f"Review by {self.user.first_name} for {self.product.product_name}"
     
 
 
-
+    
 class Wishlist(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlist")  # ✅ Changed User to AUTH_USER_MODEL
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="wishlisted_by")

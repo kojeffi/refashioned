@@ -43,34 +43,54 @@ class ProductDetailView(APIView):
             "data": serializer.data
         })
     
-    
+import uuid
 
 class ProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
-    
-    def get(self, request, slug):  # Add GET method to fetch reviews
-        product = get_object_or_404(Product, slug=slug)
-        reviews = ProductReview.objects.filter(product=product)  # Use the ProductReview model
+    serializer_class = ProductReviewSerializer
+
+    def get(self, request, product_id):
+        # Fetch reviews for the specified product
+        reviews = ProductReview.objects.filter(product__uid=product_id)
         serializer = ProductReviewSerializer(reviews, many=True)
         return Response({
-            "message": "Reviews fetched successfully",
-            "result_code": status.HTTP_200_OK,
-            "reviews": serializer.data
-        })
-    
-    def post(self, request, slug):  # POST method to add a review
-        product = get_object_or_404(Product, slug=slug)
-        serializer = ProductReviewSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user, product=product)
-            return Response({
-                "message": "Review added successfully",
-                "result_code": status.HTTP_201_CREATED,
-                "data": serializer.data
-            })
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+            "message": "Reviews retrieved successfully",
+            "data": serializer.data,
+        }, status=status.HTTP_200_OK)
 
+    def post(self, request, *args, **kwargs):
+        user = request.user  # Get authenticated user
+        product_id = request.data.get('product')  # Get product ID from request data
+        content = request.data.get('content', '').strip()  # Get review content
+        stars = request.data.get('stars', 5)  # Get stars, default to 5 if not provided
+
+        # Validate product ID (ensure it's a UUID)
+        try:
+            product_uuid = uuid.UUID(product_id)  # Convert to UUID object
+        except (ValueError, TypeError):
+            return Response({"detail": "Invalid product ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch product instance
+        product = get_object_or_404(Product, uid=product_uuid)
+
+        # Create a new review
+        review = ProductReview.objects.create(
+            user=user,
+            product=product,
+            content=content,
+            stars=stars
+        )
+
+        # Serialize the review
+        serializer = ProductReviewSerializer(review)
+
+        return Response(
+            {
+                "message": "Review created successfully",
+                "data": serializer.data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]

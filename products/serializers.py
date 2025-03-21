@@ -46,9 +46,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         return obj.like_count()
 
     def get_dislike_count(self, obj):
-        return obj.dislike_count()
-    
-
+        return obj.dislike_count()   
 
 
 class WishlistSerializer(serializers.ModelSerializer):
