@@ -50,7 +50,7 @@ class ProductReviewView(APIView):
     
     def get(self, request, slug):  # Add GET method to fetch reviews
         product = get_object_or_404(Product, slug=slug)
-        reviews =  ProductReview.objects.filter(product=product)
+        reviews = ProductReview.objects.filter(product=product)  # Use the ProductReview model
         serializer = ProductReviewSerializer(reviews, many=True)
         return Response({
             "message": "Reviews fetched successfully",

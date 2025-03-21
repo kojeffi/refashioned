@@ -84,7 +84,7 @@ class Coupon(BaseModel):
     minimum_amount = models.IntegerField(default=500)
 
 
-class ProductReview(BaseModel):
+class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Changed User to AUTH_USER_MODEL
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_reviews", blank=True)
@@ -98,6 +98,11 @@ class ProductReview(BaseModel):
 
     def dislike_count(self):
         return self.dislikes.count()
+
+    def __str__(self):
+        return f"Review by {self.user.first_name} for {self.product.product_name}"
+    
+
 
 
 class Wishlist(BaseModel):
