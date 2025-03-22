@@ -86,7 +86,7 @@ class Coupon(BaseModel):
 
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Changed User to AUTH_USER_MODEL
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_reviews", blank=True)
     dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="disliked_reviews", blank=True)
     stars = models.IntegerField(default=3, choices=[(i, i) for i in range(1, 6)])
@@ -101,6 +101,9 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"Review by {self.user.first_name} for {self.product.product_name}"
+    
+
+
 
 class Wishlist(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlist")  # ✅ Changed User to AUTH_USER_MODEL

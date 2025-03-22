@@ -40,14 +40,13 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductReview
-        fields = ["user", "product", "content", "stars", "date_added", "like_count", "dislike_count"]
+        fields = ["id", "user", "product", "content", "stars", "date_added", "like_count", "dislike_count"]
 
     def get_like_count(self, obj):
         return obj.like_count()
 
     def get_dislike_count(self, obj):
-        return obj.dislike_count()   
-
+        return obj.dislike_count()
 
 class WishlistSerializer(serializers.ModelSerializer):
     class Meta:

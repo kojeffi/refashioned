@@ -85,13 +85,18 @@ class ProductReviewView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
-    
+
 
 class LikeReviewView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, review_id):
-        review = get_object_or_404(ProductReview, id=review_id)
+        try:
+            review_uuid = uuid.UUID(review_id)  # Convert review_id to UUID
+        except ValueError:
+            return Response({"detail": "Invalid review ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        review = get_object_or_404(ProductReview, id=review_uuid)
         user = request.user
 
         if user in review.likes.all():
@@ -110,7 +115,12 @@ class DislikeReviewView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, review_id):
-        review = get_object_or_404(ProductReview, id=review_id)
+        try:
+            review_uuid = uuid.UUID(review_id)  # Convert review_id to UUID
+        except ValueError:
+            return Response({"detail": "Invalid review ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        review = get_object_or_404(ProductReview, id=review_uuid)
         user = request.user
 
         if user in review.dislikes.all():
@@ -124,7 +134,8 @@ class DislikeReviewView(APIView):
             "like_count": review.likes.count(),
             "dislike_count": review.dislikes.count(),
         }, status=status.HTTP_200_OK)
-
+    
+    
 
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
