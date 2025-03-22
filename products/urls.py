@@ -31,5 +31,9 @@ urlpatterns = [
     path('wishlist/', WishlistView.as_view(), name='wishlist'),
     path('wishlist/<int:product_id>/', WishlistView.as_view(), name='wishlist-delete'),
     path('products/<slug:slug>/related/', RelatedProductsView.as_view(), name='related-products'),
+
+
+    path('reviews/<int:review_id>/like/', LikeReviewView.as_view(), name='like-review'),
+    path('reviews/<int:review_id>/dislike/', DislikeReviewView.as_view(), name='dislike-review'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

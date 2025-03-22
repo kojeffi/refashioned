@@ -94,25 +94,14 @@ class ProductReview(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def like_count(self):
-        try:
-            return self.likes.count()
-        except Exception as e:
-            print(f"Error counting likes: {e}")
-            return 0
+        return self.likes.count()
 
     def dislike_count(self):
-        try:
-            return self.dislikes.count()
-        except Exception as e:
-            print(f"Error counting dislikes: {e}")
-            return 0
+        return self.dislikes.count()
 
     def __str__(self):
         return f"Review by {self.user.first_name} for {self.product.product_name}"
-    
 
-
-    
 class Wishlist(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlist")  # ✅ Changed User to AUTH_USER_MODEL
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="wishlisted_by")

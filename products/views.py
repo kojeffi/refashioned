@@ -49,29 +49,23 @@ class ProductReviewView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductReviewSerializer
 
-    def get(self, request, product_id):
-        # Fetch reviews for the specified product
-        reviews = ProductReview.objects.filter(product__uid=product_id)
+    def get(self, request, slug):
+        # Fetch reviews for the specified product using the slug
+        product = get_object_or_404(Product, slug=slug)
+        reviews = ProductReview.objects.filter(product=product)
         serializer = ProductReviewSerializer(reviews, many=True)
         return Response({
             "message": "Reviews retrieved successfully",
             "data": serializer.data,
         }, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, slug):
         user = request.user  # Get authenticated user
-        product_id = request.data.get('product')  # Get product ID from request data
         content = request.data.get('content', '').strip()  # Get review content
         stars = request.data.get('stars', 5)  # Get stars, default to 5 if not provided
 
-        # Validate product ID (ensure it's a UUID)
-        try:
-            product_uuid = uuid.UUID(product_id)  # Convert to UUID object
-        except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID format."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Fetch product instance
-        product = get_object_or_404(Product, uid=product_uuid)
+        # Fetch product instance using the slug
+        product = get_object_or_404(Product, slug=slug)
 
         # Create a new review
         review = ProductReview.objects.create(
@@ -91,6 +85,46 @@ class ProductReviewView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+    
+
+class LikeReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, review_id):
+        review = get_object_or_404(ProductReview, id=review_id)
+        user = request.user
+
+        if user in review.likes.all():
+            review.likes.remove(user)  # Unlike
+        else:
+            review.likes.add(user)  # Like
+            review.dislikes.remove(user)  # Remove dislike if present
+
+        return Response({
+            "message": "Like toggled successfully",
+            "like_count": review.likes.count(),
+            "dislike_count": review.dislikes.count(),
+        }, status=status.HTTP_200_OK)
+
+class DislikeReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, review_id):
+        review = get_object_or_404(ProductReview, id=review_id)
+        user = request.user
+
+        if user in review.dislikes.all():
+            review.dislikes.remove(user)  # Remove dislike
+        else:
+            review.dislikes.add(user)  # Dislike
+            review.likes.remove(user)  # Remove like if present
+
+        return Response({
+            "message": "Dislike toggled successfully",
+            "like_count": review.likes.count(),
+            "dislike_count": review.dislikes.count(),
+        }, status=status.HTTP_200_OK)
+
 
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
