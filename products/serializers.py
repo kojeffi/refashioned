@@ -6,15 +6,17 @@ class ProductImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
 
     def get_image_url(self, obj):
-        request = self.context.get("request")  
-        if obj.image:
-            return request.build_absolute_uri(obj.image.url)  
-        return None
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None  # Return None if request is not available or image is missing
 
     class Meta:
         model = ProductImage
-        fields = ["image_url"]  # ✅ Fixed: Returning full URL
+        fields = ["image_url"]
 
+
+        
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,9 +51,25 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         return obj.dislike_count()
 
 class WishlistSerializer(serializers.ModelSerializer):
+    # Nested serializers for related fields
+    product = ProductSerializer(read_only=True)  # Serialize the related Product
+
     class Meta:
         model = Wishlist
-        fields = '__all__'
+        fields = [
+            "uid",  # Include the Wishlist ID
+            "user",  # Include the user (you might want to exclude this in some cases)
+            "product",  # Include the nested product details
+            "added_on",  # Include the timestamp
+        ]
+        read_only_fields = ["uid", "added_on"]  # These fields are read-only
+
+    # Optional: If you want to include the user's email in the response
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["user"] = instance.user.email  # Add the user's email to the response
+        return representation
+    
 
 
 class RelatedProductSerializer(serializers.ModelSerializer):
