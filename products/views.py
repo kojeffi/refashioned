@@ -135,7 +135,6 @@ class DislikeReviewView(APIView):
             "dislike_count": review.dislikes.count(),
         }, status=status.HTTP_200_OK)
     
-    
 
 class WishlistView(APIView):
     permission_classes = [IsAuthenticated]
@@ -150,10 +149,15 @@ class WishlistView(APIView):
         })
     
     def post(self, request):
-        product_uid = request.data.get('product_uid')  # ✅ Changed from product_id to product_uid
+        product_uid = request.data.get('product_uid')  # Ensure product_uid is passed
         size_name = request.data.get('size_variant')
 
-        product = get_object_or_404(Product, uid=product_uid)  # ✅ Fetch using UID instead of ID
+        try:
+            product_uuid = uuid.UUID(product_uid)  # Convert product_uid to UUID
+        except ValueError:
+            return Response({"detail": "Invalid product ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        product = get_object_or_404(Product, uid=product_uuid)  # Fetch using UUID
         size_variant = get_object_or_404(SizeVariant, size_name=size_name) if size_name else None
 
         wishlist, created = Wishlist.objects.get_or_create(
@@ -168,13 +172,20 @@ class WishlistView(APIView):
             "data": {}
         })
 
-    def delete(self, request, product_uid):  # ✅ Changed from product_id to product_uid
-        Wishlist.objects.filter(user=request.user, product__uid=product_uid).delete()  # ✅ Use product__uid
+    def delete(self, request, product_uid):  # Ensure product_uid is passed
+        try:
+            product_uuid = uuid.UUID(product_uid)  # Convert product_uid to UUID
+        except ValueError:
+            return Response({"detail": "Invalid product ID format."}, status=status.HTTP_400_BAD_REQUEST)
+
+        Wishlist.objects.filter(user=request.user, product__uid=product_uuid).delete()  # Use product__uid
         return Response({
             "message": "Removed from wishlist",
             "result_code": status.HTTP_204_NO_CONTENT,
             "data": {}
         })
+    
+
 
 
 #related Products

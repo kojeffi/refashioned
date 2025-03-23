@@ -29,8 +29,9 @@ urlpatterns = [
     path('products/<slug:slug>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<slug:slug>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
     path('wishlist/', WishlistView.as_view(), name='wishlist'),
-    path('wishlist/<int:product_id>/', WishlistView.as_view(), name='wishlist-delete'),
+    path('wishlist/<uuid:product_uid>/', WishlistView.as_view(), name='wishlist-delete'),
     path('products/<slug:slug>/related/', RelatedProductsView.as_view(), name='related-products'),
+
 
     path('reviews/<uuid:review_id>/like/', LikeReviewView.as_view(), name='like-review'),
     path('reviews/<uuid:review_id>/dislike/', DislikeReviewView.as_view(), name='dislike-review'),
