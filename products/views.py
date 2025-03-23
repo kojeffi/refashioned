@@ -188,6 +188,10 @@ class WishlistView(APIView):
 
 
 
+
+
+
+
 #related Products
 class RelatedProductsView(APIView):
     def get(self, request, slug):
